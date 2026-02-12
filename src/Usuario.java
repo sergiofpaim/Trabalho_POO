@@ -1,9 +1,10 @@
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 public class Usuario {
     private static int contador = 0;
     private int id;
-    private String nome, cpf, telefone, endereco, cargo;
+    private String nome, cpf, telefone, endereco, cargo, senha;
     private LocalDate nascimento;
 
     private void setId() { id = contador++; }
@@ -25,16 +26,27 @@ public class Usuario {
     public void setCargo(String c) { cargo = c; }
 
     public LocalDate getNascimento() { return nascimento; }
-    public void setNascimento(LocalDate n) { nascimento = n; }
+    public void setNascimento(String n) {
+        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        nascimento = LocalDate.parse(n, formato);
+    }
 
-    public Usuario(String nome, String cpf, String end, String tele, LocalDate data, String role) {
+    public String getSenha() { return senha; }
+    public void setSenha(String s) { senha = s; }
+
+    public static int getContador() { return contador; }
+
+    public Usuario(String nome, String cpf, String data, String end, String tele, String sen, String role) {
         setNome(nome);
         setCPF(cpf);
         setEndereco(end);
         setTelefone(tele);
         setNascimento(data);
+        setSenha(sen);
         setCargo(role);
     }
 
-
+    public String toString() {
+        return "\nNome: " + nome + "\nCpf: " + cpf + "\nEndereco: " + endereco + "\nTelefone: " + telefone + "\nNascimento: " + nascimento.toString() + "\nCargo: " + cargo;
+    }
 }
