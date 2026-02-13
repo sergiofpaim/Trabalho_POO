@@ -1,13 +1,15 @@
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Usuario {
+public class Usuario implements Serializable{
+    private static final long serialVersionUID = 1L;
     private static int contador = 0;
     private int id;
     private String nome, cpf, telefone, endereco, cargo, senha;
     private LocalDate nascimento;
 
-    private void setId() { id = contador++; }
+    private void setId(int i) { id = i; }
     public int getId() { return id; }
 
     public String getNome() { return nome; }
@@ -34,7 +36,7 @@ public class Usuario {
     public String getSenha() { return senha; }
     public void setSenha(String s) { senha = s; }
 
-    public static int getContador() { return contador; }
+    public static void setContador(int c) { contador = c; }
 
     public Usuario(String nome, String cpf, String data, String end, String tele, String sen, String role) {
         setNome(nome);
@@ -44,6 +46,8 @@ public class Usuario {
         setNascimento(data);
         setSenha(sen);
         setCargo(role);
+        setId(contador);
+        contador++;
     }
 
     public String toString() {
