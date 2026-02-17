@@ -1,0 +1,44 @@
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
+public class Hospedagem extends Inclusos{
+    private String hotel;
+    private LocalDate checkIn;
+    private LocalDate checkOut;
+    private int capacidade;
+
+    public Hospedagem(String hotel, String checkIn, String checkOut, int capacidade,  String dataCStr, String dataFStr, String local, String tema){
+        super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
+        setHotel(hotel);
+        setCheckIn(checkIn);
+        setCheckOut(checkOut);
+        setCapacidade(capacidade);
+        
+    }
+
+    public void setHotel(String hotel){
+        this.hotel = hotel;
+    }
+    public void setCheckIn(LocalDate checkIn){
+        this.checkIn = checkIn;
+    }
+    public void setCheckOut(LocalDate checkOut){
+        this.checkOut = checkOut;
+    }
+    public void setCapacidade(int capacidade){
+        this.capacidade = capacidade;
+    }
+    public String getHotel(){
+        return hotel;
+    }
+    public LocalDate getCheckIn(){
+        return checkIn;
+    }
+    public LocalDate getCheckOut(){
+        return checkOut;
+    }
+    public int getCapacidade(){
+        return capacidade;
+    }
+}
