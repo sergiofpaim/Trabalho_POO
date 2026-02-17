@@ -19,6 +19,9 @@ public class Inclusos{
     public void setdataF(LocalDate f){
         this.dataF = f;
     }
+    public void setLocal(String local){
+        this.local = local;
+    }
 
     public double getPreco(){
         return this.preco;
@@ -28,6 +31,9 @@ public class Inclusos{
     }
     public LocalDate getdataF(){
         return this.dataF;
+    }
+    public String getLocal() {
+        return this.local;
     }
 
     public Inclusos(double p, LocalDate c, LocalDate f){

@@ -3,7 +3,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class Evento extends Inclusos implements Serializable{
-    private static final long serialVersionUID = 1L;
+    private static final long serialVersionUID=1L;
 
     private String nome;
     private LocalDate data;
@@ -14,6 +14,7 @@ public class Evento extends Inclusos implements Serializable{
                   String dataCStr, String dataFStr, String local, String tema){
         super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        setLocal(local);
         this.nome = nome;
         this.data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         this.descricao = descricao;
