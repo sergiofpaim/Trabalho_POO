@@ -1,14 +1,12 @@
 import java.time.LocalDate;
 import java.time.Period;
 
-public class Inclusos{
+abstract class Inclusos{
 
     private double preco;
     private LocalDate dataC;
     private LocalDate dataF;
     private String local;
-
-    public Inclusos(){}
 
     public void setPreco(double p){
         this.preco = p;
@@ -36,10 +34,11 @@ public class Inclusos{
         return this.local;
     }
 
-    public Inclusos(double p, LocalDate c, LocalDate f){
+    public Inclusos(double p, LocalDate c, LocalDate f, String l){
         setPreco(p);
         setdataC(c);
         setdataF(f);
+        setLocal(l);
     }
 
     public double calcularPrecoTotal(){
