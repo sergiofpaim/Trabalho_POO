@@ -10,11 +10,12 @@ public class Evento extends Inclusos implements Serializable{
     private String descricao;
     private String tema;
 
-    public Evento(String nome, LocalDate dataEvento, String descricao, double preco,
-                  LocalDate dataC, LocalDate dataF, String local, String tema){
-        super(preco, dataC, dataF);
+    public Evento(String nome, String dataStr, String descricao, double preco,
+                  String dataCStr, String dataFStr, String local, String tema){
+        super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         this.nome = nome;
-        this.data = dataEvento;
+        this.data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         this.descricao = descricao;
         this.tema = tema;
     }
