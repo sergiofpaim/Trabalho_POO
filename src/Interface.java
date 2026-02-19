@@ -10,7 +10,6 @@ import java.util.Scanner;
 
 public class Interface {
     public static Scanner s = new Scanner(System.in);
-    public static int id_inclusos;
     private static String state = "";
     private static int sessao;
     private static HashMap<Integer, Usuario> usuarios;
@@ -19,28 +18,11 @@ public class Interface {
     private static File inclusos_arq = new File("storage/Inclusos.dat");
 
     public static void main(String[] args) {
-        //System.out.println("Executando em: " + System.getProperty("user.dir"));
-        //System.out.println("Arquivo em: " + usuarios_arq.getAbsolutePath());
-        if (usuarios_arq.exists() && usuarios_arq.length() != 0) {
-            usuarios = (HashMap<Integer, Usuario>) desserialize(usuarios_arq);
-            int maiorid = usuarios.keySet().stream().max(Integer::compare).orElse(0);
-            Usuario.setContador(maiorid + 1);
-        }
-        else {
-            usuarios = new HashMap<>();
-            try { usuarios_arq.createNewFile(); }
-            catch (IOException e) { e.printStackTrace(); }
-        }
+        usuarios = desserialize(usuarios_arq);
+        Usuario.setContador(maiorId(usuarios) + 1);
 
-        if (inclusos_arq.exists() && inclusos_arq.length() != 0) {
-            inclusos = (HashMap<Integer, Inclusos>) desserialize(inclusos_arq);
-            id_inclusos = inclusos.keySet().stream().max(Integer::compare).orElse(0);
-        }
-        else {
-            inclusos = new HashMap<>();
-            try { inclusos_arq.createNewFile(); }
-            catch (IOException e) { e.printStackTrace(); }
-        }
+        inclusos = desserialize(inclusos_arq);
+        Inclusos.setContador(maiorId(inclusos) + 1);
 
         System.out.println("=================================");
         System.out.println("       Agência que viagem        ");
@@ -76,7 +58,7 @@ public class Interface {
 
     public static void listar_usuarios() {
         for (Map.Entry<Integer, Usuario> e: usuarios.entrySet()) 
-            System.out.println(e);
+            System.out.println("-Id " + e.getKey() + "\n-Usuario" + e.getValue());
     }
 
     public static void listar_inclusos() {
@@ -180,7 +162,8 @@ public class Interface {
         System.out.println("=================================");
         System.out.println("\n1. Listar Usuarios");
         System.out.println("2. Adicionar Admin");
-        System.out.println("3. Adicionar Transporte");
+        System.out.println("3. Listar Inclusos");
+        System.out.println("4. Adicionar Transporte");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
@@ -197,13 +180,12 @@ public class Interface {
             case 3:
                 listar_inclusos();
                 break;
-                
+
             case 4:
                 Transporte transp = new Transporte (100.00, "01/01/1999", "abc", "aereo", "def", 2);
-                inclusos.put(id_inclusos, transp);
-                id_inclusos++;
+                inclusos.put(transp.getId(), transp);
                 break;
-            
+
             case 999:
                 state = "";
                 break;
@@ -231,10 +213,18 @@ public class Interface {
             System.out.println("Data de CheckOut: ");
             cOut = s.nextLine();
             Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc);
-            inclusos.put(id_inclusos, hosp);
+            inclusos.put(hosp.getId(), hosp);
         } catch (Exception a) {
             System.out.println("Hospedagem nao cadastrada!");
         }
+    }
+
+    public static int maiorId(HashMap<Integer, ?> map) {
+        int maior = -1;
+        for(int i : map.keySet())
+            if (i > maior) maior = i;
+
+        return maior;
     }
 
     private static void serialize(File arquivo, Object o) {
@@ -246,17 +236,18 @@ public class Interface {
             e.printStackTrace();
         }
     }
+ 
+    private static <T> HashMap<Integer, T> desserialize(File arquivo) {
+        if (!arquivo.exists() || arquivo.length() == 0) {
+            return new HashMap<>();
+        }
 
-    private static Object desserialize(File arquivo) {
         try {
             ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo));
-            Object object = ois.readObject();
-            ois.close();
-
-            return object;
+            return (HashMap<Integer, T>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
+            return new HashMap<>();
         }
     }
 }
