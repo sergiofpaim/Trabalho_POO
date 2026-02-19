@@ -187,6 +187,7 @@ public class Interface {
         System.out.println("2. Adicionar Admin");
         System.out.println("3. Listar Inclusos");
         System.out.println("4. Adicionar Transporte");
+        System.out.println("5. Visualizar Dados Mockados");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
@@ -202,6 +203,22 @@ public class Interface {
 
             case 3:
                 listar_inclusos();
+                break;
+
+            case 5:
+                int h = 0, t = 0, ev = 0;
+                HashMap<String, Integer> porCidade = new HashMap<>();
+                for (Incluso inc : inclusos.values()) {
+                    if (inc instanceof Hospedagem) h++;
+                    else if (inc instanceof Transporte) t++;
+                    else if (inc instanceof Evento) ev++;
+                    porCidade.merge(inc.getcidade(), 1, Integer::sum);
+                }
+                System.out.println("\n=== Resumo dos Inclusos ===");
+                System.out.println("Total: " + inclusos.size());
+                System.out.println("Hospedagens: " + h + " | Transportes: " + t + " | Eventos: " + ev);
+                for (Map.Entry<String, Integer> entry : porCidade.entrySet())
+                    System.out.println("  " + entry.getKey() + ": " + entry.getValue());
                 break;
 
             case 999:

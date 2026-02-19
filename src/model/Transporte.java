@@ -61,6 +61,6 @@ public class Transporte extends Incluso implements Serializable {
         return "\nTransporte:" +
                "\nTipo: " + this.tipoTransporte +
                "\nDestino: " + this.destino +
-               "\nDuração da viagem: " + this.tempo + "\n";
+               "\nDuração da viagem em horas: " + this.tempo + "\n";
     }
 }

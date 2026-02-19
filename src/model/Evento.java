@@ -63,7 +63,7 @@ public class Evento extends Incluso implements Serializable{
     public String toString(){
         return "Evento: " + nome +
                 "\nData: " + data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
-                "\nDescricao: " + descricao +
+                "\nDescrição: " + descricao +
                 "\nTema: " + tema +
                 "\nPeriodo: de " + getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 "\nPreco diario: R$ " + getPreco() +

@@ -32,6 +32,17 @@ public class Hospedagem extends Incluso {
     @Override
     public String toString(){
         return "Hotel: " + this.hotel
-                + " Preco: " + this.getPreco();
+                + " Preço: R$" + this.getPreco();
+    }
+
+    @Override
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade){
+         // Para hospedagem (parceria), a viagem deve estar DENTRO do periodo da parceria
+         // Parceria Inicio <= Viagem Inicio  AND  Parceria Fim >= Viagem Fim
+         // E a cidade deve bater
+         boolean dataValida = (this.getDataInicio().isBefore(comeco) || this.getDataInicio().isEqual(comeco)) &&
+                              (this.getDataFim().isAfter(fim) || this.getDataFim().isEqual(fim));
+                              
+         return dataValida && this.getcidade().equals(cidade);
     }
 }
