@@ -10,26 +10,36 @@ import java.util.Map;
 
 public class Interface {
     public static Scanner s = new Scanner(System.in);
+    public static int id_inclusos;
     private static String state = "";
     private static int sessao;
     private static HashMap<Integer, Usuario> usuarios;
+    private static HashMap<Integer, Inclusos> inclusos;
     private static File usuarios_arq = new File("storage/Usuarios.dat");
+    private static File inclusos_arq = new File("storage/Inclusos.dat");
 
     public static void main(String[] args) {
         //System.out.println("Executando em: " + System.getProperty("user.dir"));
         //System.out.println("Arquivo em: " + usuarios_arq.getAbsolutePath());
         if (usuarios_arq.exists() && usuarios_arq.length() != 0) {
             usuarios = (HashMap<Integer, Usuario>) desserialize(usuarios_arq);
-            int maiorid = usuarios.keySet().stream().max(Integer::compare).get();
+            int maiorid = usuarios.keySet().stream().max(Integer::compare).orElse(0);
             Usuario.setContador(maiorid + 1);
         }
         else {
             usuarios = new HashMap<>();
-            try {
-                usuarios_arq.createNewFile();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            try { usuarios_arq.createNewFile(); }
+            catch (IOException e) { e.printStackTrace(); }
+        }
+
+        if (inclusos_arq.exists() && inclusos_arq.length() != 0) {
+            inclusos = (HashMap<Integer, Inclusos>) desserialize(inclusos_arq);
+            id_inclusos = inclusos.keySet().stream().max(Integer::compare).orElse(0);
+        }
+        else {
+            inclusos = new HashMap<>();
+            try { inclusos_arq.createNewFile(); }
+            catch (IOException e) { e.printStackTrace(); }
         }
 
         System.out.println("=================================");
@@ -59,6 +69,8 @@ public class Interface {
                 else PainelCliente();
             }
         }
+
+        serialize(inclusos_arq, inclusos);
         serialize(usuarios_arq, usuarios);
     }
 

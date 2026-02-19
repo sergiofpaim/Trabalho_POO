@@ -41,6 +41,6 @@ public class Transporte extends Inclusos {
     public String toString() {
         return "\nTransporte: \nTipo: " + this.getTipoTransporte() + 
                 "\nDestino: " + this.getDestino() + 
-                "\nDuração da viagem: " + this.getTempo() + "\n";
+                "\nDuracao da viagem: " + this.getTempo() + "\n";
     }
 }
