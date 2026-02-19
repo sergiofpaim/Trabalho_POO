@@ -1,8 +1,9 @@
+package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Evento extends Inclusos implements Serializable{
+public class Evento extends Incluso implements Serializable{
     private static final long serialVersionUID=1L;
 
     private String nome;
@@ -11,9 +12,10 @@ public class Evento extends Inclusos implements Serializable{
     private String tema;
 
     public Evento(String nome, String dataStr, String descricao, double preco,
-                  String dataCStr, String dataFStr, String local, String tema){
+                  String dataCStr, String dataFStr, String local, String tema, String id){
         super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
+                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local, id);
+                
         this.nome = nome;
         this.data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         this.descricao = descricao;
@@ -63,8 +65,7 @@ public class Evento extends Inclusos implements Serializable{
                 "\nData: " + data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 "\nDescricao: " + descricao +
                 "\nTema: " + tema +
-                "\nPeriodo: de " + getdataC().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
-                " a " + getdataF().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
+                "\nPeriodo: de " + getData().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) +
                 "\nPreco diario: R$ " + getPreco() +
                 "\nPreco total: R$ " + calcularPrecoTotal();
     }

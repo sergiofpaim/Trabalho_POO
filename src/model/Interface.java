@@ -1,28 +1,31 @@
+package model;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.time.LocalDate;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
+import java.util.UUID;
+import repo.Repo;
 
 public class Interface {
     public static Scanner s = new Scanner(System.in);
+
     private static String state = "";
-    private static int sessao;
-    private static HashMap<Integer, Usuario> usuarios;
-    private static HashMap<Integer, Inclusos> inclusos;
+    private static String sessao;
+
+    private static HashMap<String, Usuario> usuarios;
+    private static HashMap<String, Incluso> inclusos;
+    private static HashMap<String, Viagem> viagens;
+
     private static File usuarios_arq = new File("storage/Usuarios.dat");
     private static File inclusos_arq = new File("storage/Inclusos.dat");
+    private static File viagens_arq = new File("storage/Viagens.dat");
 
     public static void main(String[] args) {
-        usuarios = desserialize(usuarios_arq);
-        Usuario.setContador(maiorId(usuarios) + 1);
-
-        inclusos = desserialize(inclusos_arq);
-        Inclusos.setContador(maiorId(inclusos) + 1);
+        usuarios = Repo.desserialize(usuarios_arq);
+        inclusos = Repo.desserialize(inclusos_arq);
+        viagens = Repo.desserialize(viagens_arq);
 
         System.out.println("=================================");
         System.out.println("       Agência que viagem        ");
@@ -30,18 +33,22 @@ public class Interface {
 
         while (!state.equals("sair")) {
             if (state.equals("")){
-                sessao = -1;
+                sessao = "";
                 System.out.println("\nRegistrar uma conta ou logar?");
                 System.out.println("0. Registrar");
                 System.out.println("1. Logar");
                 System.out.println("999. Sair");
+
                 int opcao = s.nextInt();
                 s.nextLine();
-                if (opcao == -1) state = "debug";
-                else if (opcao == 0) state = "registro";
-                else if (opcao == 1) state = "login";
-                else if (opcao == 999) state = "sair";
-                else System.out.println("Valor invalido!");
+
+                switch (opcao) {
+                    case -1 -> state = "debug";
+                    case 0 -> state = "registro";
+                    case 1 -> state = "login";
+                    case 999 -> state = "sair";
+                    default -> System.out.println("Valor invalido!");
+                }
             }
             else if (state.equals("debug")) PainelDebug();
             else if (state.equals("registro")) registro();
@@ -52,17 +59,17 @@ public class Interface {
             }
         }
 
-        serialize(inclusos_arq, inclusos);
-        serialize(usuarios_arq, usuarios);
+        Repo.serialize(inclusos_arq, inclusos);
+        Repo.serialize(usuarios_arq, usuarios);
     }
 
     public static void listar_usuarios() {
-        for (Map.Entry<Integer, Usuario> e: usuarios.entrySet()) 
+        for (Map.Entry<String, Usuario> e: usuarios.entrySet()) 
             System.out.println("-Id " + e.getKey() + "\n-Usuario" + e.getValue());
     }
 
     public static void listar_inclusos() {
-        for (Map.Entry<Integer, Inclusos> e: inclusos.entrySet())
+        for (Map.Entry<String, Incluso> e: inclusos.entrySet())
             System.out.println(e);
     }
 
@@ -83,7 +90,7 @@ public class Interface {
             String p = s.nextLine();
 
             try {
-                Usuario novo = new Usuario(n, c, d, e, t, p, "cliente");
+                Usuario novo = new Usuario(n, c, d, e, t, p, "cliente", UUID.randomUUID().toString());
                 usuarios.put(novo.getId(), novo);
             } catch (Exception a) {
                 System.out.println(a);
@@ -102,8 +109,8 @@ public class Interface {
         System.out.print("Senha: ");
         String pass = s.nextLine();
 
-        int id = validar(user, pass);
-        if (id < 0) {
+        String id = validar(user, pass);
+        if (id.equals("")) {
           System.out.println("Usuario e senha invalidos!");
           state = "";
         }
@@ -113,11 +120,11 @@ public class Interface {
         }
     }
 
-    public static int validar(String user, String pass) {
-        for (Map.Entry<Integer, Usuario> e: usuarios.entrySet())
+    public static String validar(String user, String pass) {
+        for (Map.Entry<String, Usuario> e: usuarios.entrySet())
             if (e.getValue().getNome().equals(user) && e.getValue().getSenha().equals(pass)) 
                 return e.getKey();
-        return -1;
+        return "";
     }
 
     public static void PainelCliente() {
@@ -129,6 +136,9 @@ public class Interface {
 
         int opcao = s.nextInt();
         switch (opcao) {
+            case 1:
+                addViagem();
+                break;
             case 999:
                 state = "";
                 break;
@@ -143,6 +153,7 @@ public class Interface {
         System.out.println("          Painel de Admin        ");
         System.out.println("=================================");
         System.out.println("\nComo podemos te ajudar " + usuarios.get(sessao).getNome() + "?");
+        System.out.println("1. Adicionar localidade");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
@@ -173,17 +184,12 @@ public class Interface {
                 break;
 
             case 2:
-                Usuario admin = new Usuario("admin", "", "01/01/1999", "", "", "admin", "admin");
+                Usuario admin = new Usuario("admin", "", "01/01/1999", "", "", "admin", "admin", "admin");
                 usuarios.put(admin.getId(), admin);
                 break;
 
             case 3:
                 listar_inclusos();
-                break;
-
-            case 4:
-                Transporte transp = new Transporte (100.00, "01/01/1999", "abc", "aereo", "def", 2);
-                inclusos.put(transp.getId(), transp);
                 break;
 
             case 999:
@@ -212,42 +218,88 @@ public class Interface {
             cIn = s.nextLine();
             System.out.println("Data de CheckOut: ");
             cOut = s.nextLine();
-            Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc);
+            Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc, UUID.randomUUID().toString());
             inclusos.put(hosp.getId(), hosp);
         } catch (Exception a) {
             System.out.println("Hospedagem nao cadastrada!");
         }
     }
 
-    public static int maiorId(HashMap<Integer, ?> map) {
-        int maior = -1;
-        for(int i : map.keySet())
-            if (i > maior) maior = i;
+   //TODO: Criar service
+   private static void addViagem() {
+        System.out.println("=================================");
+        System.out.println("         Adicionar Viagem        ");
+        System.out.println("=================================");
 
-        return maior;
-    }
+        System.out.print("Origem: ");
+        String origem = s.nextLine();
 
-    private static void serialize(File arquivo, Object o) {
-        try {
-            ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(arquivo));
-            oos.writeObject(o);
-            oos.close();
-        } catch(IOException e) {
-            e.printStackTrace();
-        }
-    }
- 
-    private static <T> HashMap<Integer, T> desserialize(File arquivo) {
-        if (!arquivo.exists() || arquivo.length() == 0) {
-            return new HashMap<>();
+        System.out.print("Destino: ");
+        String destino = s.nextLine();
+
+        System.out.print("Data inicio (dd/MM/yyyy): ");
+        String dataInicioStr = s.nextLine();
+
+        System.out.print("Data final (dd/MM/yyyy): ");
+        String dataFinalStr = s.nextLine();
+
+        System.out.print("Orcamento maximo: ");
+        double orcamento = s.nextDouble();
+        s.nextLine();
+
+        java.time.format.DateTimeFormatter formatter =
+                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+
+        LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
+        LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
+
+        List<Incluso> inclusosDisponiveis = new java.util.ArrayList<>();
+
+        for (Incluso incluso : inclusos.values()) {
+
+            if (incluso.checarDisponibilidade(
+                    dataInicio,
+                    dataFinal,
+                    destino,
+                    orcamento)) {
+
+                inclusosDisponiveis.add(incluso);
+            }
         }
 
-        try {
-            ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo));
-            return (HashMap<Integer, T>) ois.readObject();
-        } catch (IOException | ClassNotFoundException e) {
-            e.printStackTrace();
-            return new HashMap<>();
+        if (inclusosDisponiveis.isEmpty()) {
+            System.out.println("Nenhum servico encontrado.");
+            return;
         }
-    }
+
+        System.out.println("\nServicos encontrados:");
+        for (Incluso incluso : inclusosDisponiveis) {
+            System.out.println(incluso);
+        }
+
+        double precoTotal = 0.0;
+
+        for (Incluso incluso : inclusosDisponiveis) {
+            precoTotal += incluso.calcularPrecoTotal();
+        }
+
+        String titularId = sessao;
+
+        Viagem viagem = new Viagem(
+                titularId,
+                origem,
+                destino,
+                precoTotal,
+                dataInicio,
+                dataFinal,
+                inclusosDisponiveis
+        );
+
+        viagens.put(UUID.randomUUID().toString(), viagem);
+
+        System.out.println("\nViagem criada com sucesso!");
+        System.out.println("Preco total: " + precoTotal);
+
+}
+
 }
