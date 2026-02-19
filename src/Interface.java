@@ -1,4 +1,3 @@
-
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,8 +6,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+import java.util.ArrayList;
 
 import model.Hospedagem;
+import model.Transporte;
+import model.Evento;
 import model.Incluso;
 import model.Usuario;
 import model.Viagem;
@@ -235,7 +237,59 @@ public class Interface {
         }
     }
 
-   private static void addViagem() {
+    private static void mostrarList(List<Incluso> lista) {
+        for (int i = 0; i < lista.size(); i++) {
+            System.out.println("Opcao "+ i + "\n" + lista.get(i));
+        }
+    }
+
+    private static List<Incluso> escolhaDisponiveis(List<Incluso> disponiveis, LocalDate Inicio, LocalDate Final) {
+        List<Incluso> Transportes = new ArrayList<>();
+        List<Incluso> Hospedagens = new ArrayList<>();
+        List<Incluso> Eventos = new ArrayList<>();
+        List<Incluso> inclusosSelecionados = new ArrayList<>();
+
+        for (Incluso i : disponiveis) {
+            if (i instanceof Transporte) Transportes.add(i);
+            if (i instanceof Hospedagem) Hospedagens.add(i);
+            if (i instanceof Evento) Eventos.add(i);
+        }
+
+        mostrarList(Transportes);
+
+        System.out.println("Qual transporte você deseja?");
+        int opcao = s.nextInt();
+        inclusosSelecionados.add(Transportes.get(opcao));
+
+        System.out.println("Qual Hospedagem você deseja?");
+        opcao = s.nextInt();
+        Hospedagem atual = (Hospedagem) Hospedagens.get(opcao);
+        atual.setDataInicio(Inicio); // Modificando a data de ultilização
+        atual.setDataFim(Final);     // de acordo com necessidade do cliente
+        inclusosSelecionados.add(atual);
+
+        System.out.println("Qual Evento você deseja?");
+        opcao = s.nextInt();
+        inclusosSelecionados.add(Eventos.get(opcao));
+
+        for (Incluso i : inclusosSelecionados) {
+            System.out.println(i);
+        }
+        
+        double precoTotal = 0.0;
+
+        for (Incluso incluso : inclusosSelecionados) {
+            precoTotal += incluso.calcularPrecoTotal();
+        }
+
+        System.out.println("Preço do roteiro: R$ " + precoTotal);
+        System.out.println("Deseja finalizar este roteiro? (Não tem volta!)");
+        opcao = s.nextInt();
+        if (opcao == 1) return inclusosSelecionados;
+        else return null;
+    }
+
+    private static void addViagem() {
         System.out.println("=================================");
         System.out.println("         Adicionar Viagem        ");
         System.out.println("=================================");
@@ -252,32 +306,22 @@ public class Interface {
         System.out.print("Data final (dd/MM/yyyy): ");
         String dataFinalStr = s.nextLine();
 
-        System.out.print("Orcamento maximo: ");
-        double orcamento = s.nextDouble();
-        s.nextLine();
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
         LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio, dataFinal, destino, orcamento);
+        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio, dataFinal, destino);
 
         if (inclusosDisponiveis.isEmpty()) {
             System.out.println("Nenhum servico encontrado.");
             return;
         }
 
-        System.out.println("\nServicos encontrados:");
-        for (Incluso incluso : inclusosDisponiveis) {
-            System.out.println(incluso);
-        }
+        List<Incluso> selecionados = escolhaDisponiveis(inclusosDisponiveis, dataInicio, dataFinal);
+        if (selecionados == null) return;
 
         double precoTotal = 0.0;
-
-        for (Incluso incluso : inclusosDisponiveis) {
-            precoTotal += incluso.calcularPrecoTotal();
-        }
 
         String titularId = sessao;
 
@@ -288,7 +332,7 @@ public class Interface {
                 precoTotal,
                 dataInicio,
                 dataFinal,
-                inclusosDisponiveis
+                selecionados
         );
 
         viagens.put(UUID.randomUUID().toString(), viagem);

@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.Period;
 
 public class Transporte extends Incluso implements Serializable {
 
@@ -36,6 +37,23 @@ public class Transporte extends Incluso implements Serializable {
 
     public int getTempo() {
         return this.tempo;
+    }
+
+    @Override
+    public double calcularPrecoTotal() {
+        double taxa = 0;
+        switch (tipoTransporte) {
+            case "aereo":
+                taxa = 200.0;
+                break;
+            case "rodoviario":
+                taxa = 100.0;
+                break;
+            case "maritmo":
+                taxa = 50.0;
+                break;
+        }
+        return Period.between(this.getDataInicio(), this.getDataFim()).getDays() * taxa;
     }
 
     @Override

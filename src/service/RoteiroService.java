@@ -9,12 +9,11 @@ public class RoteiroService {
     public List<Incluso> ChecarInclusosDisponiveis(java.util.Collection<Incluso> todosInclusos, 
                                                    LocalDate dataInicio, 
                                                    LocalDate dataFinal, 
-                                                   String destino, 
-                                                   double orcamento) {
+                                                   String destino) {
         List<Incluso> inclusosDisponiveis = new java.util.ArrayList<>();
     
         for (Incluso incluso : todosInclusos) {
-            if (incluso.checarDisponibilidade(dataInicio, dataFinal, destino, orcamento)) {
+            if (incluso.checarDisponibilidade(dataInicio, dataFinal, destino)) {
                 inclusosDisponiveis.add(incluso);
             }
         }
