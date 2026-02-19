@@ -7,14 +7,13 @@ public class Hospedagem extends Inclusos{
     private LocalDate checkOut;
     private int capacidade;
 
-    public Hospedagem(String hotel, double preco,String checkIn, String checkOut, int capacidade,  String dataCStr, String dataFStr, String local){
-        super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
+    public Hospedagem(String hotel, double preco, String checkIn, String checkOut, int capacidade, String  local){
+        super(preco, LocalDate.parse(checkIn, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
         setHotel(hotel);
         setCheckIn(checkIn);
         setCheckOut(checkOut);
         setCapacidade(capacidade);
-        
     }
 
     public void setHotel(String hotel){
@@ -42,5 +41,11 @@ public class Hospedagem extends Inclusos{
     }
     public int getCapacidade(){
         return capacidade;
+    }
+
+    public String toString(){
+        return "Hotel: " + this.hotel
+                + " Periodo: " + this.checkIn + this.checkOut
+                + " Preco: " + this.getPreco();
     }
 }

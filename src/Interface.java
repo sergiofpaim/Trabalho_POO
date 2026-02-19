@@ -197,6 +197,30 @@ public class Interface {
         }
     }
 
+    public static void CadastraHospedagem(){
+        String h, loc, cIn, cOut;
+        double preco;
+        int cap;
+        try{
+            System.out.println("Nome do Hotel: ");
+            h = s.nextLine();
+            System.out.println("Preco da diária: ");
+            preco = s.nextDouble();
+            System.out.println("Local do Hotel: ");
+            loc = s.nextLine();
+            System.out.println("Capacidade de reservas simultaneas: ");
+            cap = s.nextInt();
+            System.out.println("Data de CheckIn: ");
+            cIn = s.nextLine();
+            System.out.println("Data de CheckOut: ");
+            cOut = s.nextLine();
+            Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc);
+            inclusos.put(id_inclusos, hosp);
+        } catch (Exception a) {
+            System.out.println("Hospedagem nao cadastrada!");
+        }
+    }
+
     private static void serialize(File arquivo, Object o) {
         try {
             ObjectOutputStream oos = new ObjectOutputStream(new FileOutputStream(arquivo));
