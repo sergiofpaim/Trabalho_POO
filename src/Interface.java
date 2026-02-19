@@ -1,12 +1,12 @@
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.io.IOException;
-import java.util.Scanner;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Scanner;
 
 public class Interface {
     public static Scanner s = new Scanner(System.in);
@@ -76,6 +76,11 @@ public class Interface {
 
     public static void listar_usuarios() {
         for (Map.Entry<Integer, Usuario> e: usuarios.entrySet()) 
+            System.out.println(e);
+    }
+
+    public static void listar_inclusos() {
+        for (Map.Entry<Integer, Inclusos> e: inclusos.entrySet())
             System.out.println(e);
     }
 
@@ -175,6 +180,7 @@ public class Interface {
         System.out.println("=================================");
         System.out.println("\n1. Listar Usuarios");
         System.out.println("2. Adicionar Admin");
+        System.out.println("3. Adicionar Transporte");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
@@ -188,6 +194,16 @@ public class Interface {
                 usuarios.put(admin.getId(), admin);
                 break;
 
+            case 3:
+                listar_inclusos();
+                break;
+                
+            case 4:
+                Transporte transp = new Transporte (100.00, "01/01/1999", "abc", "aereo", "def", 2);
+                inclusos.put(id_inclusos, transp);
+                id_inclusos++;
+                break;
+            
             case 999:
                 state = "";
                 break;

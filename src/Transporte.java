@@ -1,11 +1,14 @@
+import java.io.Serializable; 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
-public class Transporte extends Inclusos {
+public class Transporte extends Inclusos implements Serializable {
+    private static final long serialVersionUID=1L;
     private String tipo_transporte, destino;
     private int tempo;
     
-    public Transporte (double preco, LocalDate data_c, LocalDate data_f, String local, String tipo_transporte, String destino, int tempo) {
-        super(preco, data_c, data_f, local);
+    public Transporte (double preco, String data, String local, String tipo_transporte, String destino, int tempo) {
+        super(preco, LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")), LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
         setLocal(local);
         setTipoTransporte(tipo_transporte);
         setDestino(destino);
