@@ -9,19 +9,19 @@ public abstract class Incluso implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private String id;
+    private String cidade;
     private double preco;
     private LocalDate dataInicio;
     private LocalDate dataFim;
-    private String local;
 
     public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim, 
-                   String local, String id) {
+                   String cidade, String id) {
 
+        this.id = id;
+        this.cidade = cidade;
         this.preco = preco;
         this.dataInicio = dataInicio;
         this.dataFim = dataFim;
-        this.local = local;
-        this.id = id;
     }
 
     public double getPreco(){
@@ -36,8 +36,8 @@ public abstract class Incluso implements Serializable {
         return this.dataFim;
     }
 
-    public String getLocal() {
-        return this.local;
+    public String getcidade() {
+        return this.cidade;
     }
 
     public String getId() {
@@ -48,10 +48,9 @@ public abstract class Incluso implements Serializable {
         return Period.between(this.dataInicio, this.dataFim).getDays() * this.preco;
     }
 
-    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String local, double preco){
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade, double preco){
         if ((this.dataInicio.isEqual(comeco) || this.dataInicio.isAfter(comeco)) && ((this.dataInicio.isEqual(fim) || this.dataInicio.isBefore(fim))) &&
-             this.local.equals(local) &&
-             this.preco <= preco)
+             this.cidade.equals(cidade))
             return true;
 
         else 
