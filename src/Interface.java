@@ -1,17 +1,16 @@
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
-import java.util.ArrayList;
-
-import model.Hospedagem;
-import model.Transporte;
 import model.Evento;
+import model.Hospedagem;
 import model.Incluso;
+import model.Transporte;
 import model.Usuario;
 import model.Viagem;
 import repo.Repo;
@@ -149,7 +148,7 @@ public class Interface {
         s.nextLine();
         switch (opcao) {
             case 1:
-                addViagem();
+                criaViagem();
                 break;
             case 999:
                 state = "";
@@ -261,33 +260,37 @@ public class Interface {
     }
 
     private static List<Incluso> escolhaDisponiveis(List<Incluso> disponiveis, LocalDate Inicio, LocalDate Final) {
-        List<Incluso> Transportes = new ArrayList<>();
-        List<Incluso> Hospedagens = new ArrayList<>();
-        List<Incluso> Eventos = new ArrayList<>();
+        List<Incluso> transportes = new ArrayList<>();
+        List<Incluso> hospedagens = new ArrayList<>();
+        List<Incluso> eventos = new ArrayList<>();
         List<Incluso> inclusosSelecionados = new ArrayList<>();
 
         for (Incluso i : disponiveis) {
-            if (i instanceof Transporte) Transportes.add(i);
-            if (i instanceof Hospedagem) Hospedagens.add(i);
-            if (i instanceof Evento) Eventos.add(i);
+            if (i instanceof Transporte) transportes.add(i);
+            if (i instanceof Hospedagem) hospedagens.add(i);
+            if (i instanceof Evento) eventos.add(i);
         }
 
-        mostrarList(Transportes);
+        mostrarList(transportes);
 
-        System.out.println("Qual transporte você deseja?");
+        System.out.println("\nQual transporte você deseja?");
         int opcao = s.nextInt();
-        inclusosSelecionados.add(Transportes.get(opcao));
+        inclusosSelecionados.add(transportes.get(opcao));
 
-        System.out.println("Qual Hospedagem você deseja?");
+        mostrarList(hospedagens);
+
+        System.out.println("\nQual Hospedagem você deseja?");
         opcao = s.nextInt();
-        Hospedagem atual = (Hospedagem) Hospedagens.get(opcao);
+        Hospedagem atual = (Hospedagem) hospedagens.get(opcao);
         atual.setDataInicio(Inicio); // Modificando a data de ultilização
         atual.setDataFim(Final);     // de acordo com necessidade do cliente
         inclusosSelecionados.add(atual);
 
-        System.out.println("Qual Evento você deseja?");
+        mostrarList(hospedagens);
+
+        System.out.println("\nQual Evento você deseja?");
         opcao = s.nextInt();
-        inclusosSelecionados.add(Eventos.get(opcao));
+        inclusosSelecionados.add(eventos.get(opcao));
 
         for (Incluso i : inclusosSelecionados) {
             System.out.println(i);
@@ -299,14 +302,16 @@ public class Interface {
             precoTotal += incluso.calcularPrecoTotal();
         }
 
-        System.out.println("Preço do roteiro: R$ " + precoTotal);
-        System.out.println("Deseja finalizar este roteiro? (Não tem volta!)");
+        System.out.println("\nPreço do roteiro: R$ " + precoTotal);
+        System.out.println("\nDeseja finalizar este roteiro? (Não tem volta!)");
+        System.out.println("\n1. Sim");
+        System.out.println("\n2. Não");
         opcao = s.nextInt();
         if (opcao == 1) return inclusosSelecionados;
         else return null;
     }
 
-    private static void addViagem() {
+    private static void criaViagem() {
         System.out.println("=================================");
         System.out.println("         Adicionar Viagem        ");
         System.out.println("=================================");
@@ -354,6 +359,9 @@ public class Interface {
 
         viagens.put(UUID.randomUUID().toString(), viagem);
 
+
+        //TODO: Serializar viagem como arquivo roteiro com id do usuário
+        
         System.out.println("\nViagem criada com sucesso!");
         System.out.println("Preco total: " + precoTotal);
     }

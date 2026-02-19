@@ -3,7 +3,6 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.Period;
 
 public class Transporte extends Incluso implements Serializable {
 
@@ -53,13 +52,13 @@ public class Transporte extends Incluso implements Serializable {
                 taxa = 50.0;
                 break;
         }
-        return Period.between(this.getDataInicio(), this.getDataFim()).getDays() * taxa;
+        return this.tempo * taxa;
     }
 
     @Override
     public String toString() {
-        return "\nTransporte:" +
-               "\nTipo: " + this.tipoTransporte +
+        return "\nTransporte: " + this.tipoTransporte +
+               "\nPreço: " + this.calcularPrecoTotal() +
                "\nDestino: " + this.destino +
                "\nDuração da viagem em horas: " + this.tempo + "\n";
     }
