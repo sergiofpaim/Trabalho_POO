@@ -1,12 +1,14 @@
 package model;
 import java.io.File;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
 import repo.Repo;
+import service.RoteiroService;
 
 public class Interface {
     public static Scanner s = new Scanner(System.in);
@@ -17,6 +19,7 @@ public class Interface {
     private static HashMap<String, Usuario> usuarios;
     private static HashMap<String, Incluso> inclusos;
     private static HashMap<String, Viagem> viagens;
+    private static RoteiroService roteiroService = new RoteiroService();
 
     private static File usuarios_arq = new File("storage/Usuarios.dat");
     private static File inclusos_arq = new File("storage/Inclusos.dat");
@@ -132,9 +135,11 @@ public class Interface {
         System.out.println("         Painel de viagem        ");
         System.out.println("=================================");
         System.out.println("\nComo podemos te ajudar " + usuarios.get(sessao).getNome() + "?");
+        System.out.println("1. Checar roteiro de viagem");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
+        s.nextLine();
         switch (opcao) {
             case 1:
                 addViagem();
@@ -225,7 +230,6 @@ public class Interface {
         }
     }
 
-   //TODO: Criar service
    private static void addViagem() {
         System.out.println("=================================");
         System.out.println("         Adicionar Viagem        ");
@@ -247,25 +251,12 @@ public class Interface {
         double orcamento = s.nextDouble();
         s.nextLine();
 
-        java.time.format.DateTimeFormatter formatter =
-                java.time.format.DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
         LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = new java.util.ArrayList<>();
-
-        for (Incluso incluso : inclusos.values()) {
-
-            if (incluso.checarDisponibilidade(
-                    dataInicio,
-                    dataFinal,
-                    destino,
-                    orcamento)) {
-
-                inclusosDisponiveis.add(incluso);
-            }
-        }
+        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio, dataFinal, destino, orcamento);
 
         if (inclusosDisponiveis.isEmpty()) {
             System.out.println("Nenhum servico encontrado.");
@@ -299,7 +290,5 @@ public class Interface {
 
         System.out.println("\nViagem criada com sucesso!");
         System.out.println("Preco total: " + precoTotal);
-
-}
-
+    }
 }

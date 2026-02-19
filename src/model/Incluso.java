@@ -4,7 +4,7 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
 
-abstract class Incluso implements Serializable {
+public abstract class Incluso implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
