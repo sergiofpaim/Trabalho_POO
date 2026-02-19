@@ -1,4 +1,4 @@
-package model;
+
 import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -7,6 +7,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.UUID;
+
+import model.Hospedagem;
+import model.Incluso;
+import model.Usuario;
+import model.Viagem;
 import repo.Repo;
 import service.RoteiroService;
 
