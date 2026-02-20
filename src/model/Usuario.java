@@ -2,7 +2,6 @@ package model;
 
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.util.UUID;
 
 public class Usuario implements Serializable {
@@ -18,18 +17,16 @@ public class Usuario implements Serializable {
     private String senha;
     private LocalDate nascimento;
 
-    public Usuario(String nome, String cpf, String dataNascimento,
+    public Usuario(String nome, String cpf, LocalDate dataNascimento,
             String endereco, String telefone,
             String senha, String cargo) {
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
         this.id = UUID.randomUUID().toString();
         this.nome = nome;
         this.cpf = cpf;
         this.endereco = endereco;
         this.telefone = telefone;
-        this.nascimento = LocalDate.parse(dataNascimento, formatter);
+        this.nascimento = dataNascimento;
         this.senha = senha;
         this.cargo = cargo;
     }

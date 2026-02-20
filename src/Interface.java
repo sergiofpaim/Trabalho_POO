@@ -95,7 +95,7 @@ public class Interface {
             String senha = s.nextLine();
 
             try {
-                Usuario novo = new Usuario(nome, cpf, nascimento, endereco, telefone, senha, "cliente");
+                Usuario novo = new Usuario(nome, cpf, LocalDate.parse(nascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy")) , endereco, telefone, senha, "cliente");
                 service.adicionarUsuario(novo);
             } catch (Exception a) {
                 System.out.println(a);
@@ -192,53 +192,59 @@ public class Interface {
         System.out.println("           Criar Roteiro         ");
         System.out.println("=================================");
 
-        System.out.print("Origem: ");
-        String origem = s.nextLine();
+        try { 
+            System.out.print("Origem: ");
+            String origem = s.nextLine();
 
-        System.out.print("Destino: ");
-        String destino = s.nextLine();
+            System.out.print("Destino: ");
+            String destino = s.nextLine();
 
-        System.out.print("Data inicio (dd/MM/yyyy): ");
-        String dataInicioStr = s.nextLine();
+            System.out.print("Data inicio (dd/MM/yyyy): ");
+            String dataInicioStr = s.nextLine();
 
-        System.out.print("Data final (dd/MM/yyyy): ");
-        String dataFinalStr = s.nextLine();
+            System.out.print("Data final (dd/MM/yyyy): ");
+            String dataFinalStr = s.nextLine();
 
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
-        LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
-        LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
+            LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
+            LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = service.checarInclusosDisponiveis(dataInicio, dataFinal, origem, destino);
+            List<Incluso> inclusosDisponiveis = service.checarInclusosDisponiveis(dataInicio, dataFinal, origem, destino);
 
-        if (inclusosDisponiveis.isEmpty()) {
-            System.out.println("Nenhum serviço encontrado.");
-            return;
+            if (inclusosDisponiveis.isEmpty()) {
+                System.out.println("Nenhum serviço encontrado.");
+                return;
+            }
+
+            List<Incluso> selecionados = escolheIncluso(inclusosDisponiveis, dataInicio, dataFinal);
+            if (selecionados == null) {
+                return;
+            }
+
+            double precoTotal = 0.0;
+
+            for (Incluso incluso : selecionados) {
+                precoTotal += incluso.calcularPrecoTotal();
+            }
+
+
+            Roteiro viagem = new Roteiro(
+                    sessao,
+                    origem,
+                    destino,
+                    precoTotal,
+                    dataInicio,
+                    dataFinal,
+                    selecionados,
+                    service.getTaxaLucro());
+
+            service.adicionarRoteiro(viagem);
+
+            System.out.println("\nViagem criada com sucesso!");
+        } catch(Exception e) {
+            System.out.println("\nEntrada Invalida!");
         }
-
-        List<Incluso> selecionados = escolheIncluso(inclusosDisponiveis, dataInicio, dataFinal);
-        if (selecionados == null) {
-            return;
-        }
-
-        double precoTotal = 0.0;
-
-        for (Incluso incluso : selecionados) {
-            precoTotal += incluso.calcularPrecoTotal();
-        }
-
-        Roteiro viagem = new Roteiro(
-                sessao,
-                origem,
-                destino,
-                precoTotal,
-                dataInicio,
-                dataFinal,
-                selecionados);
-
-        service.adicionarRoteiro(viagem);
-
-        System.out.println("\nViagem criada com sucesso!");
     }
 
     private static List<Incluso> escolheIncluso(List<Incluso> disponiveis, LocalDate inicio, LocalDate finalIncluso) {
@@ -248,6 +254,7 @@ public class Interface {
         List<Incluso> inclusosSelecionados = new ArrayList<>();
 
         for (Incluso i : disponiveis) {
+            i.setPreco(i.getPreco() * (1+service.getTaxaLucro()));
             if (i instanceof Transporte transporte) {
                 transportes.add(transporte);
             }
@@ -366,17 +373,22 @@ public class Interface {
             double taxa = s.nextDouble();
             service.setTaxaLucro(taxa);
         } catch (Exception e) {
-        System.out.print("Valor Invalido");
+            System.out.print("Valor Invalido");
         }
     }
 
     public static void gerarRelatorioClientes() {
         List<Usuario> users = service.getUsuarios();
+        double lucroTotal = 0.0;
 
         for (Usuario u : users) {
             List<Roteiro> roteiros = service.buscarRoteirosPorTitular(u.getId());
+            for (Roteiro r : roteiros) {
+                lucroTotal += r.getLucro();
+            }
             mostrarRoteiros(roteiros);
         }
+        System.out.println("Lucro total da agência: " + lucroTotal);
     }
 
     public static void removerUsuario() {
@@ -395,110 +407,113 @@ public class Interface {
         String dataFim;
         double preco;
 
-        System.out.println("Localidade: ");
-        localidade = s.nextLine();
+        try {
+            System.out.println("Localidade: ");
+            localidade = s.nextLine();
 
-        System.out.println("Taxa preço: ");
-        preco = s.nextDouble();
-        s.nextLine();
+            System.out.println("Taxa preço: ");
+            preco = s.nextDouble();
+            s.nextLine();
 
-        System.out.println("Data de início: ");
-        dataInicio = s.nextLine();
+            System.out.println("Data de início: ");
+            dataInicio = s.nextLine();
 
-        System.out.println("Data de fim: ");
-        dataFim = s.nextLine();
+            System.out.println("Data de fim: ");
+            dataFim = s.nextLine();
+            System.out.println("Deseja criar \n[0] Hospedagem\n[1] Evento\n[2] Transporte");
 
-        System.out.println("Deseja criar \n[0] Hospedagem\n[1] Evento\n[2] Transporte");
+            switch (s.nextInt()) {
+                case 0 -> {
+                    try {
+                        s.nextLine();
+                        String nomeHotel;
+                        int capacidade;
 
-        switch (s.nextInt()) {
-            case 0 -> {
-                try {
-                    s.nextLine();
-                    String nomeHotel;
-                    int capacidade;
+                        System.out.println("Nome do Hotel: ");
+                        nomeHotel = s.nextLine();
 
-                    System.out.println("Nome do Hotel: ");
-                    nomeHotel = s.nextLine();
+                        System.out.println("Capacidade: ");
+                        capacidade = s.nextInt();
 
-                    System.out.println("Capacidade: ");
-                    capacidade = s.nextInt();
+                        Hospedagem hospedagem = new Hospedagem(
+                                nomeHotel, preco, LocalDate.parse(dataInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy")), LocalDate.parse(dataFim, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                capacidade, localidade);
 
-                    Hospedagem hospedagem = new Hospedagem(
-                            nomeHotel, preco, dataInicio, dataFim,
-                            capacidade, localidade);
+                        service.adicionarIncluso(hospedagem);
 
-                    service.adicionarIncluso(hospedagem);
-
-                } catch (Exception e) {
-                    System.out.println("Erro ao criar hospedagem");
+                    } catch (Exception e) {
+                        System.out.println("Erro ao criar hospedagem");
+                    }
                 }
+
+                case 1 -> {
+                    try {
+                        s.nextLine();
+                        String nomeEvento;
+                        String dataEvento;
+                        String descricao;
+                        String tema;
+
+                        System.out.println("Nome do Evento: ");
+                        nomeEvento = s.nextLine();
+
+                        System.out.println("Data do Evento: ");
+                        dataEvento = s.nextLine();
+
+                        System.out.println("Descrição: ");
+                        descricao = s.nextLine();
+
+                        System.out.println("Tema: ");
+                        tema = s.nextLine();
+
+                        Evento evento = new Evento(
+                                nomeEvento, LocalDate.parse(dataEvento, DateTimeFormatter.ofPattern("dd/MM/yyyy")), descricao,
+                                preco, LocalDate.parse(dataInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy")), LocalDate.parse(dataFim, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                                localidade, tema);
+
+                        service.adicionarIncluso(evento);
+
+                    } catch (Exception e) {
+                        System.out.println("Erro ao criar evento");
+                    }
+                }
+
+                case 2 -> {
+                    try {
+                        s.nextLine();
+                        String tipoTransporte;
+                        String destino;
+                        int tempo;
+
+                        System.out.println("Tipo de Transporte: ");
+                        tipoTransporte = s.nextLine();
+
+                        System.out.println("Destino: ");
+                        destino = s.nextLine();
+
+                        System.out.println("Tempo (em horas): ");
+                        tempo = s.nextInt();
+
+                        Transporte transporte = new Transporte(
+                                preco, LocalDate.parse(dataInicio, DateTimeFormatter.ofPattern("dd/MM/yyyy")), localidade,
+                                tipoTransporte, destino, tempo);
+
+                        service.adicionarIncluso(transporte);
+
+                    } catch (Exception e) {
+                        System.out.println("Erro ao criar transporte");
+                    }
+                }
+
+                default ->
+                    System.out.println("Valor inválido!");
             }
 
-            case 1 -> {
-                try {
-                    s.nextLine();
-                    String nomeEvento;
-                    String dataEvento;
-                    String descricao;
-                    String tema;
-
-                    System.out.println("Nome do Evento: ");
-                    nomeEvento = s.nextLine();
-
-                    System.out.println("Data do Evento: ");
-                    dataEvento = s.nextLine();
-
-                    System.out.println("Descrição: ");
-                    descricao = s.nextLine();
-
-                    System.out.println("Tema: ");
-                    tema = s.nextLine();
-
-                    Evento evento = new Evento(
-                            nomeEvento, dataEvento, descricao,
-                            preco, dataInicio, dataFim,
-                            localidade, tema);
-
-                    service.adicionarIncluso(evento);
-
-                } catch (Exception e) {
-                    System.out.println("Erro ao criar evento");
-                }
-            }
-
-            case 2 -> {
-                try {
-                    s.nextLine();
-                    String tipoTransporte;
-                    String destino;
-                    int tempo;
-
-                    System.out.println("Tipo de Transporte: ");
-                    tipoTransporte = s.nextLine();
-
-                    System.out.println("Destino: ");
-                    destino = s.nextLine();
-
-                    System.out.println("Tempo (em horas): ");
-                    tempo = s.nextInt();
-
-                    Transporte transporte = new Transporte(
-                            preco, dataInicio, localidade,
-                            tipoTransporte, destino, tempo);
-
-                    service.adicionarIncluso(transporte);
-
-                } catch (Exception e) {
-                    System.out.println("Erro ao criar transporte");
-                }
-            }
-
-            default ->
-                System.out.println("Valor inválido!");
+            System.out.println("Objeto criado com sucesso!");
+            service.salvarInclusos();
+        } catch (Exception e) {
+            System.out.println("Entrada Invalida!");
         }
-
-        System.out.println("Objeto criado com sucesso!");
-        service.salvarInclusos();
     }
 
     public static void apagaInclusos() {

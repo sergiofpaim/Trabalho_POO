@@ -10,13 +10,10 @@ public class Hospedagem extends Incluso {
     private int capacidade;
     private int diarias;
 
-    public Hospedagem(String hotel, double preco, String checkIn, String checkOut,
+    public Hospedagem(String hotel, double preco, LocalDate checkIn, LocalDate checkOut,
             int capacidade, String local) {
 
-        super(preco,
-                LocalDate.parse(checkIn, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                local);
+        super(preco, checkIn, checkOut, local);
 
         this.hotel = hotel;
         this.capacidade = capacidade;

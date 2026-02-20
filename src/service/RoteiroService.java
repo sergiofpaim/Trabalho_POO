@@ -25,7 +25,7 @@ public class RoteiroService {
         this.usuarios = new ArrayList<>();
         this.inclusos = new ArrayList<>();
         this.roteiros = new ArrayList<>();
-        this.taxa_lucro = 0;
+        this.taxa_lucro = 0.05;
     }
 
     //Taxa Lucro

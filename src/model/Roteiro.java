@@ -13,8 +13,9 @@ public class Roteiro implements Serializable {
     private LocalDate dataComeco;
     private LocalDate dataFim;
     private List<Incluso> inclusos;
+    private double taxaLucro;
 
-    public Roteiro(String titularId, String origem, String destino, Double preco, LocalDate dataComeco, LocalDate dataFim, List<Incluso> inclusos) {
+    public Roteiro(String titularId, String origem, String destino, Double preco, LocalDate dataComeco, LocalDate dataFim, List<Incluso> inclusos, double taxaLucro) {
         this.titularId = titularId;
         this.origem = origem;
         this.destino = destino;
@@ -22,6 +23,15 @@ public class Roteiro implements Serializable {
         this.dataComeco = dataComeco;
         this.dataFim = dataFim;
         this.inclusos = inclusos;
+        this.taxaLucro = taxaLucro;
+    }
+
+    public double getTaxaLucro() {
+        return taxaLucro;
+    }
+
+    public void setTaxaLucro(double t) {
+        taxaLucro = t;
     }
 
     public String getTitularId() {
@@ -78,5 +88,9 @@ public class Roteiro implements Serializable {
 
     public void setInclusos(List<Incluso> inclusos) {
         this.inclusos = inclusos;
+    }
+
+    public double getLucro() {
+        return (taxaLucro != 0) ? preco / (1 + taxaLucro) : 0;
     }
 }

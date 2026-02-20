@@ -15,8 +15,7 @@ public abstract class Incluso implements Serializable {
     private LocalDate dataInicio;
     private LocalDate dataFim;
 
-    public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim,
-            String cidade) {
+    public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim, String cidade) {
 
         this.id = UUID.randomUUID().toString();
         this.cidade = cidade;
@@ -31,6 +30,10 @@ public abstract class Incluso implements Serializable {
 
     public void setDataFim(LocalDate fim) {
         dataFim = fim;
+    }
+
+    public void setPreco(double p) {
+        this.preco = p;
     }
 
     public double getPreco() {

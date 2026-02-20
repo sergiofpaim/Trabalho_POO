@@ -12,14 +12,8 @@ public class Transporte extends Incluso implements Serializable {
     private String destino;
     private int tempo;
 
-    public Transporte(double preco, String data, String origem,
-            String tipoTransporte, String destino,
-            int tempo) {
-
-        super(preco,
-                LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                origem);
+    public Transporte(double preco, LocalDate data, String origem, String tipoTransporte, String destino, int tempo) {
+        super(preco, data, data, origem);
 
         this.tipoTransporte = tipoTransporte;
         this.destino = destino;
