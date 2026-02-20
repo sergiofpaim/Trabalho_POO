@@ -22,7 +22,7 @@ java -version
 
 ```
 src/
- ├── Main.java
+ ├── Interface.java
  ├── model/
  │    └── ...
  ├── repo/
@@ -37,18 +37,19 @@ bin/ (gerado após compilação)
 - `model` → Classes de domínio (entidades)
 - `repo` → Camada de persistência de dados
 - `service` → Regras de negócio
+- `seed` → Seed data predefinido
+- `storage` → Arquivos de armazenamewnto
 - `Interface.java` → Ponto de entrada da aplicação
-
 
 ---
 
 ## Como Executar
 
-
 Compile com:
 
 ```bash
-javac -d bin src/*.java src/model/*.java src/repo/*.java src/service/*.java src/seed/*.java```
+javac -d bin src/*.java src/model/*.java src/repo/*.java src/service/*.java src/seed/*.java
+```
 
 E depois rode a aplicação:
 
@@ -58,23 +59,42 @@ java -cp bin Interface
 
 ---
 
-## Testando aplicação
+# Testando a Aplicação
 
-A aplicação já vem com dados seed. Desta forma, escolha entre Paris, Nova York, Rio de Janeiro, Tokyo e Londres como localizações para viagens, entre os dias 20/02/2025 e 25/02/2025.
+A aplicação já possui **dados pré-carregados (seed data)** para facilitar os testes.
 
-## Limpar Arquivos Compilados
+---
 
-Linux / macOS:
+## Localizações Disponíveis
 
-```bash
-rm -rf bin
-```
+Para testar a criação de viagens, utilize uma das seguintes cidades:
 
-Windows:
+- São Paulo  
+- Florianópolis  
+- Rio de Janeiro  
+- Belo Horizonte  
+- Salvador  
+- Curitiba  
 
-```cmd
-rmdir /s bin
-```
+---
+
+## Período para Testes
+
+As viagens devem:
+
+- **Iniciar em:** 20/02/2025  
+- **Finalizar até:** 25/02/2025  
+
+---
+
+## Acesso Administrativo
+
+Existe um usuário administrador disponível no seed data:
+
+- **Usuário:** `admin`  
+- **Senha:** `admin`  
+
+Utilize esse login para validar as funcionalidades administrativas do sistema.
 
 ---
 
