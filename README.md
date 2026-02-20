@@ -1,6 +1,6 @@
 # Agência de Viagens
 
-Aplicação Java estruturada em camadas (model, repo e service), compilada manualmente utilizando Java 25.0.2.
+Aplicação Java estruturada em camadas (model, repo e service).
 
 ---
 
