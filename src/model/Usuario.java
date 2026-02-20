@@ -18,8 +18,8 @@ public class Usuario implements Serializable {
     private LocalDate nascimento;
 
     public Usuario(String nome, String cpf, String dataNascimento,
-                   String endereco, String telefone,
-                   String senha, String cargo, String id) {
+            String endereco, String telefone,
+            String senha, String cargo, String id) {
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -67,11 +67,11 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "\nNome: " + this.nome +
-               "\nCPF: " + this.cpf +
-               "\nEndereco: " + this.endereco +
-               "\nTelefone: " + this.telefone +
-               "\nNascimento: " + this.nascimento +
-               "\nCargo: " + this.cargo;
+        return "\nNome: " + this.nome
+                + "\nCPF: " + this.cpf
+                + "\nEndereco: " + this.endereco
+                + "\nTelefone: " + this.telefone
+                + "\nNascimento: " + this.nascimento
+                + "\nCargo: " + this.cargo;
     }
 }
