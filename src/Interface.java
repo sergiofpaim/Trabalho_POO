@@ -152,17 +152,10 @@ public class Interface {
         }
     }
 
-    public static void listarRoteiros() {
-        List<Roteiro> meusRoteiros = service.buscarRoteirosPorTitular(sessao);
-
-        if (meusRoteiros.isEmpty()) {
-            System.out.println("Não há roteiros cadastrados para esta sessão.");
-            return;
-        }
-
-        for (Roteiro roteiro : meusRoteiros) {
+    public static void mostrarRoteiros(List<Roteiro> roteiros) {
+        for (Roteiro roteiro : roteiros) {
             System.out.println("======================================");
-            System.out.println("Titular: " + roteiro.getTitularId());
+            System.out.println("Titular: " + service.buscarUsuarioPorId(roteiro.getTitularId()).getNome());
             System.out.println("Origem: " + roteiro.getOrigem());
             System.out.println("Destino: " + roteiro.getDestino());
             System.out.println("Preço: R$ " + String.format("%.2f", roteiro.getPreco()));
@@ -181,6 +174,17 @@ public class Interface {
             }
             System.out.println("======================================\n");
         }
+    }
+
+    public static void listarRoteiros() {
+        List<Roteiro> meusRoteiros = service.buscarRoteirosPorTitular(sessao);
+
+        if (meusRoteiros.isEmpty()) {
+            System.out.println("Não há roteiros cadastrados para esta sessão.");
+            return;
+        }
+
+        mostrarRoteiros(meusRoteiros);
     }
 
     private static void criaRoteiro() {
@@ -318,19 +322,67 @@ public class Interface {
 
         Usuario usuario = service.buscarUsuarioPorId(sessao);
         System.out.println("\nComo podemos te ajudar " + usuario.getNome() + "?");
-        System.out.println("1. Criar inclusos");
+        System.out.println("1. Listar inclusos");
+        System.out.println("2. Criar inclusos");
+        System.out.println("3. Remover inclusos");
+        System.out.println("4. Listar usuarios");
+        System.out.println("5. Remover usuario");
+        System.out.println("6. Relatorio de vendas");
+        System.out.println("7. Modificar taxa de lucro da Agencia");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
+        s.nextLine();
         switch (opcao) {
             case 1 ->
+                listarInclusos();
+            case 2 ->
                 criaInclusos();
+            case 3 ->
+                apagaInclusos();
+            case 4 ->
+                listarUsuarios();
+            case 5 ->
+                removerUsuario();
+            case 6 -> 
+                gerarRelatorioClientes();
+            case 7 ->
+                modificarTaxaLucro();
             case 999 ->
                 state = "";
-
             default -> {
             }
         }
+    }
+
+    public static void modificarTaxaLucro() {
+        System.out.println("A taxa atual é de: " + service.getTaxaLucro());
+        System.out.print("Qual será a nova taxa de lucro: ");
+        try {
+            double taxa = s.nextDouble();
+            service.setTaxaLucro(taxa);
+        } catch (Exception e) {
+        System.out.print("Valor Invalido");
+        }
+    }
+
+    public static void gerarRelatorioClientes() {
+        List<Usuario> users = service.getUsuarios();
+
+        for (Usuario u : users) {
+            List<Roteiro> roteiros = service.buscarRoteirosPorTitular(u.getId());
+            mostrarRoteiros(roteiros);
+        }
+    }
+
+    public static void removerUsuario() {
+        listarUsuarios();
+
+        System.out.println("Qual o id do Usuario: ");
+        String id = s.nextLine();
+        boolean resultado = service.removerUsuarioPorId(id);
+        if(resultado) System.out.println("Usuario removido com sucesso!");
+        else System.out.println("Código do usuario não encontrado.");
     }
 
     public static void criaInclusos() {
@@ -338,8 +390,6 @@ public class Interface {
         String dataInicio;
         String dataFim;
         double preco;
-
-        s.nextLine();
 
         System.out.println("Localidade: ");
         localidade = s.nextLine();
@@ -520,6 +570,7 @@ public class Interface {
             System.out.println((i + 1) + " - " + lista.get(i));
         }
     }
+
 
     public static void painelDebug() {
         System.out.println("=================================");
