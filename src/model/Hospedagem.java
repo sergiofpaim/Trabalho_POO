@@ -9,12 +9,12 @@ public class Hospedagem extends Incluso {
     private int capacidade;
 
     public Hospedagem(String hotel, double preco, String checkIn, String checkOut,
-            int capacidade, String local, String id) {
+            int capacidade, String local) {
 
         super(preco,
                 LocalDate.parse(checkIn, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                local, id);
+                local);
 
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -32,8 +32,9 @@ public class Hospedagem extends Incluso {
 
     @Override
     public String toString() {
-        return "Hotel: " + this.hotel
-                + " Preço: R$" + this.getPreco();
+        return "\nHotel: " + this.hotel
+                + "\nDiária: R$ " + this.getPreco()
+                + "\nCapacidade: " + this.capacidade;
     }
 
     @Override

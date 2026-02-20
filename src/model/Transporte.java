@@ -14,12 +14,12 @@ public class Transporte extends Incluso implements Serializable {
 
     public Transporte(double preco, String data, String local,
             String tipoTransporte, String destino,
-            int tempo, String id) {
+            int tempo) {
 
         super(preco,
                 LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                local, id);
+                local);
 
         this.tipoTransporte = tipoTransporte;
         this.destino = destino;
@@ -40,25 +40,14 @@ public class Transporte extends Incluso implements Serializable {
 
     @Override
     public double calcularPrecoTotal() {
-        double taxa = 0;
-        switch (tipoTransporte) {
-            case "aereo":
-                taxa = 200.0;
-                break;
-            case "rodoviario":
-                taxa = 100.0;
-                break;
-            case "maritmo":
-                taxa = 50.0;
-                break;
-        }
-        return this.tempo * taxa;
+        return this.tempo * this.getPreco();
     }
 
     @Override
     public String toString() {
         return "\nTransporte: " + this.tipoTransporte
-                + "\nPreço: " + this.calcularPrecoTotal()
+                + "\nPreço por hora: R$ " + this.getPreco()
+                + "\nPreço total: R$ " + this.calcularPrecoTotal()
                 + "\nDestino: " + this.destino
                 + "\nDuração da viagem em horas: " + this.tempo + "\n";
     }

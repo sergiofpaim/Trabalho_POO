@@ -1,20 +1,15 @@
 
-import java.io.File;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Scanner;
-import java.util.UUID;
 import model.Evento;
 import model.Hospedagem;
 import model.Incluso;
 import model.Roteiro;
 import model.Transporte;
 import model.Usuario;
-import repo.Repo;
 import service.RoteiroService;
 
 public class Interface {
@@ -24,18 +19,10 @@ public class Interface {
     private static String state = "";
     private static String sessao;
 
-    private static HashMap<String, Usuario> usuarios;
-    private static HashMap<String, Incluso> inclusos;
-    private static HashMap<String, Roteiro> roteiros;
-
-    private static final File USUARIOS_ARQ = new File("storage/Usuarios.dat");
-    private static final File INCLUSOS_ARQ = new File("storage/Inclusos.dat");
-    private static final File ROTEIROS_ARQ = new File("storage/Roteiros.dat");
-
-    private static final RoteiroService roteiroService = new RoteiroService();
+    private static final RoteiroService service = new RoteiroService();
 
     public static void main(String[] args) {
-        desserialize();
+        service.carregarDados();
 
         System.out.println("=================================");
         System.out.println("       Agência que viagem        ");
@@ -70,7 +57,8 @@ public class Interface {
                 case "login" ->
                     login();
                 case "Logado" -> {
-                    if (usuarios.get(sessao).getCargo().equals("admin")) {
+                    Usuario usuario = service.buscarUsuarioPorId(sessao);
+                    if (usuario != null && usuario.getCargo().equals("admin")) {
                         painelAdmin();
                     } else {
                         painelCliente();
@@ -81,7 +69,7 @@ public class Interface {
             }
         }
 
-        serialize();
+        service.salvarTudo();
     }
 
     public static void registro() {
@@ -107,9 +95,8 @@ public class Interface {
             String senha = s.nextLine();
 
             try {
-                Usuario novo = new Usuario(nome, cpf, nascimento, endereco, telefone, senha, "cliente",
-                        UUID.randomUUID().toString());
-                usuarios.put(novo.getId(), novo);
+                Usuario novo = new Usuario(nome, cpf, nascimento, endereco, telefone, senha, "cliente");
+                service.adicionarUsuario(novo);
             } catch (Exception a) {
                 System.out.println(a);
             }
@@ -129,7 +116,7 @@ public class Interface {
         System.out.print("Senha: ");
         String pass = s.nextLine();
 
-        String id = Repo.validar(user, pass, usuarios);
+        String id = service.validar(user, pass);
         if (id.equals("")) {
             System.out.println("Usuário e senha invalidos!");
             state = "";
@@ -143,7 +130,9 @@ public class Interface {
         System.out.println("=================================");
         System.out.println("         Painel de viagem        ");
         System.out.println("=================================");
-        System.out.println("\nComo podemos te ajudar " + usuarios.get(sessao).getNome() + "?");
+
+        Usuario usuario = service.buscarUsuarioPorId(sessao);
+        System.out.println("\nComo podemos te ajudar " + usuario.getNome() + "?");
         System.out.println("1. Listar roteiros de viagem");
         System.out.println("2. Criar roteiro de viagem");
         System.out.println("999. Sair");
@@ -164,45 +153,33 @@ public class Interface {
     }
 
     public static void listarRoteiros() {
-        if (roteiros.isEmpty()) {
-            System.out.println("Não há roteiros cadastrados.");
+        List<Roteiro> meusRoteiros = service.buscarRoteirosPorTitular(sessao);
+
+        if (meusRoteiros.isEmpty()) {
+            System.out.println("Não há roteiros cadastrados para esta sessão.");
             return;
         }
 
-        boolean encontrou = false;
+        for (Roteiro roteiro : meusRoteiros) {
+            System.out.println("======================================");
+            System.out.println("Titular: " + roteiro.getTitularId());
+            System.out.println("Origem: " + roteiro.getOrigem());
+            System.out.println("Destino: " + roteiro.getDestino());
+            System.out.println("Preço: R$ " + String.format("%.2f", roteiro.getPreco()));
+            System.out.println("Data de Início: " + roteiro.getDataComeco());
+            System.out.println("Data de Fim: " + roteiro.getDataFim());
 
-        for (Map.Entry<String, Roteiro> entry : roteiros.entrySet()) {
-            if (entry.getValue().getTitularId().equals(sessao)) {
-                String id = entry.getKey();
-                Roteiro roteiro = entry.getValue();
-
-                encontrou = true;
-
+            List<Incluso> inclusosRoteiro = roteiro.getInclusos();
+            if (inclusosRoteiro != null && !inclusosRoteiro.isEmpty()) {
                 System.out.println("======================================");
-                System.out.println("ID do Roteiro: " + id);
-                System.out.println("Titular: " + roteiro.getTitularId());
-                System.out.println("Origem: " + roteiro.getOrigem());
-                System.out.println("Destino: " + roteiro.getDestino());
-                System.out.println("Preço: R$ " + String.format("%.2f", roteiro.getPreco()));
-                System.out.println("Data de Início: " + roteiro.getDataComeco());
-                System.out.println("Data de Fim: " + roteiro.getDataFim());
-
-                List<Incluso> inclusosRoteiro = roteiro.getInclusos();
-                if (inclusosRoteiro != null && !inclusosRoteiro.isEmpty()) {
-                    System.out.println("======================================");
-                    System.out.println("\nINCLUSOS:");
-                    for (Incluso item : inclusosRoteiro) {
-                        System.out.println(item);
-                    }
-                } else {
-                    System.out.println("Itens Inclusos: Nenhum");
+                System.out.println("\nINCLUSOS:");
+                for (Incluso item : inclusosRoteiro) {
+                    System.out.println(item);
                 }
-                System.out.println("======================================\n");
+            } else {
+                System.out.println("Itens Inclusos: Nenhum");
             }
-        }
-
-        if (!encontrou) {
-            System.out.println("Não há roteiros cadastrados para esta sessão.");
+            System.out.println("======================================\n");
         }
     }
 
@@ -228,8 +205,7 @@ public class Interface {
         LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
         LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio,
-                dataFinal, destino);
+        List<Incluso> inclusosDisponiveis = service.checarInclusosDisponiveis(dataInicio, dataFinal, destino);
 
         if (inclusosDisponiveis.isEmpty()) {
             System.out.println("Nenhum serviço encontrado.");
@@ -256,7 +232,7 @@ public class Interface {
                 dataFinal,
                 selecionados);
 
-        roteiros.put(UUID.randomUUID().toString(), viagem);
+        service.adicionarRoteiro(viagem);
 
         System.out.println("\nViagem criada com sucesso!");
     }
@@ -339,7 +315,9 @@ public class Interface {
         System.out.println("=================================");
         System.out.println("          Painel de Admin        ");
         System.out.println("=================================");
-        System.out.println("\nComo podemos te ajudar " + usuarios.get(sessao).getNome() + "?");
+
+        Usuario usuario = service.buscarUsuarioPorId(sessao);
+        System.out.println("\nComo podemos te ajudar " + usuario.getNome() + "?");
         System.out.println("1. Criar inclusos");
         System.out.println("999. Sair");
 
@@ -356,26 +334,24 @@ public class Interface {
     }
 
     public static void criaInclusos() {
-        String id;
         String localidade;
         String dataInicio;
         String dataFim;
         double preco;
 
-        System.out.println("ID: ");
-        id = s.nextLine();
+        s.nextLine();
 
         System.out.println("Localidade: ");
         localidade = s.nextLine();
 
-        System.out.println("Preço: ");
+        System.out.println("Taxa preço: ");
         preco = s.nextDouble();
         s.nextLine();
 
-        System.out.println("Data de Check-in: ");
+        System.out.println("Data de início: ");
         dataInicio = s.nextLine();
 
-        System.out.println("Data de Check-out: ");
+        System.out.println("Data de fim: ");
         dataFim = s.nextLine();
 
         System.out.println("Deseja criar \n[0] Hospedagem\n[1] Evento\n[2] Transporte");
@@ -395,10 +371,9 @@ public class Interface {
 
                     Hospedagem hospedagem = new Hospedagem(
                             nomeHotel, preco, dataInicio, dataFim,
-                            capacidade, localidade, id
-                    );
+                            capacidade, localidade);
 
-                    inclusos.put(hospedagem.getId(), hospedagem);
+                    service.adicionarIncluso(hospedagem);
 
                 } catch (Exception e) {
                     System.out.println("Erro ao criar hospedagem");
@@ -428,10 +403,9 @@ public class Interface {
                     Evento evento = new Evento(
                             nomeEvento, dataEvento, descricao,
                             preco, dataInicio, dataFim,
-                            localidade, tema, id
-                    );
+                            localidade, tema);
 
-                    inclusos.put(evento.getId(), evento);
+                    service.adicionarIncluso(evento);
 
                 } catch (Exception e) {
                     System.out.println("Erro ao criar evento");
@@ -451,15 +425,14 @@ public class Interface {
                     System.out.println("Destino: ");
                     destino = s.nextLine();
 
-                    System.out.println("Tempo (em minutos): ");
+                    System.out.println("Tempo (em horas): ");
                     tempo = s.nextInt();
 
                     Transporte transporte = new Transporte(
                             preco, dataInicio, localidade,
-                            tipoTransporte, destino, tempo, id
-                    );
+                            tipoTransporte, destino, tempo);
 
-                    inclusos.put(transporte.getId(), transporte);
+                    service.adicionarIncluso(transporte);
 
                 } catch (Exception e) {
                     System.out.println("Erro ao criar transporte");
@@ -471,6 +444,7 @@ public class Interface {
         }
 
         System.out.println("Objeto criado com sucesso!");
+        service.salvarInclusos();
     }
 
     public static void apagaInclusos() {
@@ -481,7 +455,9 @@ public class Interface {
         List<Incluso> listaHospedagens = new ArrayList<>();
         List<Incluso> listaEventos = new ArrayList<>();
 
-        for (Incluso incluso : inclusos.values()) {
+        s.nextLine();
+
+        for (Incluso incluso : service.getInclusos()) {
             if (incluso instanceof Transporte) {
                 listaTransportes.add(incluso);
             }
@@ -500,21 +476,21 @@ public class Interface {
                     mostrarLista(listaHospedagens);
                     System.out.println("\nQual hospedagem você deseja apagar? (Digite o ID)");
                     String idSelecionado = s.next();
-                    inclusos.remove(idSelecionado);
+                    service.removerInclusoPorId(idSelecionado);
                 }
 
                 case 1 -> {
                     mostrarLista(listaEventos);
                     System.out.println("\nQual evento você deseja apagar? (Digite o ID)");
                     String idSelecionado = s.next();
-                    inclusos.remove(idSelecionado);
+                    service.removerInclusoPorId(idSelecionado);
                 }
 
                 case 2 -> {
                     mostrarLista(listaTransportes);
                     System.out.println("\nQual transporte você deseja apagar? (Digite o ID)");
                     String idSelecionado = s.next();
-                    inclusos.remove(idSelecionado);
+                    service.removerInclusoPorId(idSelecionado);
                 }
 
                 default ->
@@ -526,27 +502,15 @@ public class Interface {
         }
     }
 
-    private static void serialize() {
-        Repo.serialize(USUARIOS_ARQ, usuarios);
-        Repo.serialize(INCLUSOS_ARQ, inclusos);
-        Repo.serialize(ROTEIROS_ARQ, roteiros);
-    }
-
-    private static void desserialize() {
-        usuarios = Repo.desserialize(USUARIOS_ARQ);
-        inclusos = Repo.desserialize(INCLUSOS_ARQ);
-        roteiros = Repo.desserialize(ROTEIROS_ARQ);
-    }
-
     public static void listarUsuarios() {
-        for (Map.Entry<String, Usuario> e : usuarios.entrySet()) {
-            System.out.println("-Id " + e.getKey() + "\n-Usuario" + e.getValue());
+        for (Usuario u : service.getUsuarios()) {
+            System.out.println("-Id " + u.getId() + "\n-Usuario" + u);
         }
     }
 
     public static void listarInclusos() {
-        for (Map.Entry<String, Incluso> e : inclusos.entrySet()) {
-            System.out.println(e);
+        for (Incluso i : service.getInclusos()) {
+            System.out.println(i);
         }
     }
 
@@ -562,7 +526,7 @@ public class Interface {
         System.out.println("         Painel de Debug         ");
         System.out.println("=================================");
         System.out.println("\n1. Listar Usuarios");
-        System.out.println("2. Adicionar Admin");
+        System.out.println("2. Gerar Seed Data (Usuarios e Inclusos)");
         System.out.println("3. Listar Inclusos");
         System.out.println("999. Sair");
 
@@ -572,8 +536,7 @@ public class Interface {
                 listarUsuarios();
 
             case 2 -> {
-                Usuario admin = new Usuario("admin", "", "01/01/1999", "", "", "admin", "admin", "admin");
-                usuarios.put(admin.getId(), admin);
+                service.seedData();
             }
 
             case 3 ->

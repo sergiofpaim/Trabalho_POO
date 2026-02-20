@@ -13,9 +13,9 @@ public class Evento extends Incluso {
     private String tema;
 
     public Evento(String nome, String dataStr, String descricao, double preco,
-            String dataCStr, String dataFStr, String local, String tema, String id) {
+            String dataCStr, String dataFStr, String local, String tema) {
         super(preco, LocalDate.parse(dataCStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local, id);
+                LocalDate.parse(dataFStr, DateTimeFormatter.ofPattern("dd/MM/yyyy")), local);
 
         this.nome = nome;
         this.data = LocalDate.parse(dataStr, DateTimeFormatter.ofPattern("dd/MM/yyyy"));

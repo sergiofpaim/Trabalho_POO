@@ -3,6 +3,7 @@ package model;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.Period;
+import java.util.UUID;
 
 public abstract class Incluso implements Serializable {
 
@@ -15,9 +16,9 @@ public abstract class Incluso implements Serializable {
     private LocalDate dataFim;
 
     public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim,
-            String cidade, String id) {
+            String cidade) {
 
-        this.id = id;
+        this.id = UUID.randomUUID().toString();
         this.cidade = cidade;
         this.preco = preco;
         this.dataInicio = dataInicio;

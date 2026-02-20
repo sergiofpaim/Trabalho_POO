@@ -6,9 +6,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.HashMap;
-import java.util.Map;
-import model.Usuario;
+import java.util.ArrayList;
 
 public class Repo {
 
@@ -18,28 +16,21 @@ public class Repo {
             oos.writeObject(o);
             oos.close();
         } catch (IOException e) {
+            System.out.println("Erro ao serializar " + arquivo.getName() + ": " + e.getMessage());
         }
     }
 
-    public static <T> HashMap<String, T> desserialize(File arquivo) {
+    @SuppressWarnings("unchecked")
+    public static <T> ArrayList<T> desserialize(File arquivo) {
         if (!arquivo.exists() || arquivo.length() == 0) {
-            return new HashMap<>();
+            return new ArrayList<>();
         }
 
         try (ObjectInputStream ois = new ObjectInputStream(new FileInputStream(arquivo))) {
-            return (HashMap<String, T>) ois.readObject();
+            return (ArrayList<T>) ois.readObject();
         } catch (IOException | ClassNotFoundException e) {
-            return new HashMap<>();
+            System.out.println("Erro ao desserializar " + arquivo.getName() + ": " + e.getMessage());
+            return new ArrayList<>();
         }
-    }
-
-    public static String validar(String user, String pass, HashMap<String, Usuario> usuarios) {
-        for (Map.Entry<String, Usuario> e : usuarios.entrySet()) {
-            if (e.getValue().getNome().equals(user) && e.getValue().getSenha().equals(pass)) {
-                return e.getKey();
-            }
-        }
-
-        return "";
     }
 }
