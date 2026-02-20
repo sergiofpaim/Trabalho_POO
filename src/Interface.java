@@ -28,9 +28,9 @@ public class Interface {
     private static HashMap<String, Incluso> inclusos;
     private static HashMap<String, Roteiro> roteiros;
 
-    private static File usuarios_arq = new File("storage/Usuarios.dat");
-    private static File inclusos_arq = new File("storage/Inclusos.dat");
-    private static File roteiros_arq = new File("storage/Roteiros.dat");
+    private static final File USUARIOS_ARQ = new File("storage/Usuarios.dat");
+    private static final File INCLUSOS_ARQ = new File("storage/Inclusos.dat");
+    private static final File ROTEIROS_ARQ = new File("storage/Roteiros.dat");
 
     private static final RoteiroService roteiroService = new RoteiroService();
 
@@ -187,11 +187,11 @@ public class Interface {
                 System.out.println("Data de Início: " + roteiro.getDataComeco());
                 System.out.println("Data de Fim: " + roteiro.getDataFim());
 
-                List<Incluso> inclusos = roteiro.getInclusos();
-                if (inclusos != null && !inclusos.isEmpty()) {
+                List<Incluso> inclusosRoteiro = roteiro.getInclusos();
+                if (inclusosRoteiro != null && !inclusosRoteiro.isEmpty()) {
                     System.out.println("======================================");
                     System.out.println("\nINCLUSOS:");
-                    for (Incluso item : inclusos) {
+                    for (Incluso item : inclusosRoteiro) {
                         System.out.println(item);
                     }
                 } else {
@@ -208,7 +208,7 @@ public class Interface {
 
     private static void criaRoteiro() {
         System.out.println("=================================");
-        System.out.println("         Adicionar Viagem        ");
+        System.out.println("           Criar Roteiro         ");
         System.out.println("=================================");
 
         System.out.print("Origem: ");
@@ -356,130 +356,186 @@ public class Interface {
     }
 
     public static void criaInclusos() {
-        String id, loc, cIn, cOut;
+        String id;
+        String localidade;
+        String dataInicio;
+        String dataFim;
         double preco;
+
         System.out.println("ID: ");
         id = s.nextLine();
-        System.out.println("Cidade: ");
-        loc = s.nextLine();
+
+        System.out.println("Localidade: ");
+        localidade = s.nextLine();
+
         System.out.println("Preço: ");
         preco = s.nextDouble();
-        System.out.println("Data de CheckIn: ");
-        cIn = s.nextLine();
-        System.out.println("Data de CheckOut: ");
-        cOut = s.nextLine();
-        System.out.println("Deseja criar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
+        s.nextLine();
+
+        System.out.println("Data de Check-in: ");
+        dataInicio = s.nextLine();
+
+        System.out.println("Data de Check-out: ");
+        dataFim = s.nextLine();
+
+        System.out.println("Deseja criar \n[0] Hospedagem\n[1] Evento\n[2] Transporte");
+
         switch (s.nextInt()) {
             case 0 -> {
                 try {
-                    String h;
-                    int cap;
+                    s.nextLine();
+                    String nomeHotel;
+                    int capacidade;
+
                     System.out.println("Nome do Hotel: ");
-                    h = s.nextLine();
+                    nomeHotel = s.nextLine();
+
                     System.out.println("Capacidade: ");
-                    cap = s.nextInt();
-                    Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc, id);
-                    inclusos.put(hosp.getId(), hosp);
+                    capacidade = s.nextInt();
+
+                    Hospedagem hospedagem = new Hospedagem(
+                            nomeHotel, preco, dataInicio, dataFim,
+                            capacidade, localidade, id
+                    );
+
+                    inclusos.put(hospedagem.getId(), hospedagem);
+
                 } catch (Exception e) {
                     System.out.println("Erro ao criar hospedagem");
                 }
             }
+
             case 1 -> {
                 try {
-                    String n;
-                    String data;
-                    String desc;
+                    s.nextLine();
+                    String nomeEvento;
+                    String dataEvento;
+                    String descricao;
                     String tema;
+
                     System.out.println("Nome do Evento: ");
-                    n = s.nextLine();
-                    System.out.println("Data: ");
-                    data = s.nextLine();
-                    System.out.println("Descricao: ");
-                    desc = s.nextLine();
+                    nomeEvento = s.nextLine();
+
+                    System.out.println("Data do Evento: ");
+                    dataEvento = s.nextLine();
+
+                    System.out.println("Descrição: ");
+                    descricao = s.nextLine();
+
                     System.out.println("Tema: ");
                     tema = s.nextLine();
-                    Evento ev = new Evento(n, data, desc, preco, cIn, cOut, loc, tema, id);
-                    inclusos.put(ev.getId(), ev);
+
+                    Evento evento = new Evento(
+                            nomeEvento, dataEvento, descricao,
+                            preco, dataInicio, dataFim,
+                            localidade, tema, id
+                    );
+
+                    inclusos.put(evento.getId(), evento);
+
                 } catch (Exception e) {
-                    System.out.println("Erro ao criar hospedagem");
+                    System.out.println("Erro ao criar evento");
                 }
             }
+
             case 2 -> {
                 try {
+                    s.nextLine();
                     String tipoTransporte;
                     String destino;
                     int tempo;
+
                     System.out.println("Tipo de Transporte: ");
                     tipoTransporte = s.nextLine();
+
                     System.out.println("Destino: ");
                     destino = s.nextLine();
-                    System.out.println("Tempo: ");
+
+                    System.out.println("Tempo (em minutos): ");
                     tempo = s.nextInt();
-                    Transporte trnsp = new Transporte(preco, cIn, loc, tipoTransporte, destino, tempo, id);
-                    inclusos.put(trnsp.getId(), trnsp);
+
+                    Transporte transporte = new Transporte(
+                            preco, dataInicio, localidade,
+                            tipoTransporte, destino, tempo, id
+                    );
+
+                    inclusos.put(transporte.getId(), transporte);
+
                 } catch (Exception e) {
-                    System.out.println("Erro ao criar hospedagem");
+                    System.out.println("Erro ao criar transporte");
                 }
             }
+
             default ->
-                System.out.println("Valor invalido!");
+                System.out.println("Valor inválido!");
         }
+
         System.out.println("Objeto criado com sucesso!");
     }
 
     public static void apagaInclusos() {
-        System.out.println("Deseja apagar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
-        List<Incluso> transportes = new ArrayList<>();
-        List<Incluso> hospedagens = new ArrayList<>();
-        List<Incluso> eventos = new ArrayList<>();
 
-        for (Incluso i : inclusos.values()) {
-            if (i instanceof Transporte) {
-                transportes.add(i);
+        System.out.println("Deseja apagar \n[0] Hospedagem\n[1] Evento\n[2] Transporte");
+
+        List<Incluso> listaTransportes = new ArrayList<>();
+        List<Incluso> listaHospedagens = new ArrayList<>();
+        List<Incluso> listaEventos = new ArrayList<>();
+
+        for (Incluso incluso : inclusos.values()) {
+            if (incluso instanceof Transporte) {
+                listaTransportes.add(incluso);
             }
-            if (i instanceof Hospedagem) {
-                hospedagens.add(i);
+            if (incluso instanceof Hospedagem) {
+                listaHospedagens.add(incluso);
             }
-            if (i instanceof Evento) {
-                eventos.add(i);
+            if (incluso instanceof Evento) {
+                listaEventos.add(incluso);
             }
         }
+
         try {
             switch (s.nextInt()) {
+
                 case 0 -> {
-                    mostrarLista(hospedagens);
+                    mostrarLista(listaHospedagens);
                     System.out.println("\nQual hospedagem você deseja apagar? (Digite o ID)");
-                    int opcao = s.nextInt();
-                    inclusos.remove(opcao);
+                    String idSelecionado = s.next();
+                    inclusos.remove(idSelecionado);
                 }
+
                 case 1 -> {
-                    mostrarLista(eventos);
+                    mostrarLista(listaEventos);
                     System.out.println("\nQual evento você deseja apagar? (Digite o ID)");
-                    int opcao = s.nextInt();
-                    inclusos.remove(opcao);
+                    String idSelecionado = s.next();
+                    inclusos.remove(idSelecionado);
                 }
+
                 case 2 -> {
-                    mostrarLista(transportes);
+                    mostrarLista(listaTransportes);
                     System.out.println("\nQual transporte você deseja apagar? (Digite o ID)");
-                    int opcao = s.nextInt();
-                    inclusos.remove(opcao);
+                    String idSelecionado = s.next();
+                    inclusos.remove(idSelecionado);
                 }
+
+                default ->
+                    System.out.println("Valor inválido!");
             }
+
         } catch (Exception e) {
-            System.out.println("Erro ao apagar hospedagem");
+            System.out.println("Erro ao apagar incluso");
         }
     }
 
     private static void serialize() {
-        Repo.serialize(usuarios_arq, usuarios);
-        Repo.serialize(inclusos_arq, inclusos);
-        Repo.serialize(roteiros_arq, roteiros);
+        Repo.serialize(USUARIOS_ARQ, usuarios);
+        Repo.serialize(INCLUSOS_ARQ, inclusos);
+        Repo.serialize(ROTEIROS_ARQ, roteiros);
     }
 
     private static void desserialize() {
-        usuarios = Repo.desserialize(usuarios_arq);
-        inclusos = Repo.desserialize(inclusos_arq);
-        roteiros = Repo.desserialize(roteiros_arq);
+        usuarios = Repo.desserialize(USUARIOS_ARQ);
+        inclusos = Repo.desserialize(INCLUSOS_ARQ);
+        roteiros = Repo.desserialize(ROTEIROS_ARQ);
     }
 
     public static void listarUsuarios() {
