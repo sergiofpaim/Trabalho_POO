@@ -229,6 +229,79 @@ public class Interface {
         }
     }
 
+    public static void CriaInclusos(){
+        String id, loc, cIn, cOut;
+        double preco;
+        System.out.println("ID: ");
+        id = s.nextLine();
+        System.out.println("Cidade: ");
+        loc = s.nextLine();
+        System.out.println("Preço: ");
+        preco = s.nextDouble();
+        System.out.println("Data de CheckIn: ");
+        cIn = s.nextLine();
+        System.out.println("Data de CheckOut: ");
+        cOut = s.nextLine();
+        System.out.println("Deseja criar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
+        switch(s.nextInt()){
+            case 0:
+                try{
+                    String h;
+                    int cap;
+                    System.out.println("Nome do Hotel: ");
+                    h = s.nextLine();
+                    System.out.println("Capacidade: ");
+                    cap = s.nextInt();
+                    Hospedagem hosp = new Hospedagem(h,  preco,  cIn, cOut, cap, loc, id);
+                    inclusos.put(hosp.getId(), hosp);
+                } catch (Exception e){
+                    System.out.println("Erro ao criar hospedagem");
+                }
+                break;
+            case 1:
+                try{
+                    String n;
+                    String data;
+                    String desc;
+                    String tema;
+                    System.out.println("Nome do Evento: ");
+                    n = s.nextLine();
+                    System.out.println("Data: ");
+                    data = s.nextLine();
+                    System.out.println("Descricao: ");
+                    desc = s.nextLine();
+                    System.out.println("Tema: ");
+                    tema = s.nextLine();
+                    Evento ev = new Evento( n,  data,  desc,  preco,  cIn,  cOut,  loc,  tema,  id);
+                    inclusos.put(ev.getId(), ev);
+                } catch (Exception e) {
+                    System.out.println("Erro ao criar hospedagem");
+                }
+                break;
+            case 2:
+                try{
+                    String tipoTransporte;
+                    String destino;
+                    int tempo;
+                    System.out.println("Tipo de Transporte: ");
+                    tipoTransporte = s.nextLine();
+                    System.out.println("Destino: ");
+                    destino = s.nextLine();
+                    System.out.println("Tempo: ");
+                    tempo = s.nextInt();
+                    Transporte trnsp = new Transporte(preco,  cIn,  loc,  tipoTransporte,  destino, tempo, id);
+                    inclusos.put(trnsp.getId(), trnsp);
+                } catch (Exception e) {
+                    System.out.println("Erro ao criar hospedagem");
+                }
+                break;
+            default:
+                System.out.println("Valor invalido!");
+                break;
+        }
+        System.out.println("Objeto criado com sucesso!");
+    }
+
     public static void CadastraHospedagem(){
         String h, loc, cIn, cOut;
         double preco;
