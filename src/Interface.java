@@ -302,6 +302,43 @@ public class Interface {
         System.out.println("Objeto criado com sucesso!");
     }
 
+    public static void ApagaInclusos(){
+        System.out.println("Deseja apagar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
+        List<Incluso> transportes = new ArrayList<>();
+        List<Incluso> hospedagens = new ArrayList<>();
+        List<Incluso> eventos = new ArrayList<>();
+
+        for (Incluso i : disponiveis) {
+            if (i instanceof Transporte) transportes.add(i);
+            if (i instanceof Hospedagem) hospedagens.add(i);
+            if (i instanceof Evento) eventos.add(i);
+        }
+        try{
+            switch(s.nextInt()) {
+                case 0:
+                    mostrarList(hospedagens);
+                    System.out.println("\nQual hospedagem você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                    break;
+                case 1:
+                    mostrarList(eventos);
+                    System.out.println("\nQual evento você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                    break;
+                case 2:
+                    mostrarList(transportes);
+                    System.out.println("\nQual transporte você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                    break;
+            }
+        } catch (Exception e){
+            System.out.println("Erro ao apagar hospedagem");
+        }
+    }
+
     public static void CadastraHospedagem(){
         String h, loc, cIn, cOut;
         double preco;
