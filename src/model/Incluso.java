@@ -45,7 +45,7 @@ public abstract class Incluso implements Serializable {
         return this.dataFim;
     }
 
-    public String getcidade() {
+    public String getCidade() {
         return this.cidade;
     }
 
@@ -57,12 +57,5 @@ public abstract class Incluso implements Serializable {
         return Period.between(this.dataInicio, this.dataFim).getDays() * this.preco;
     }
 
-    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade) {
-        if ((this.dataInicio.isEqual(comeco) || this.dataInicio.isAfter(comeco)) && ((this.dataInicio.isEqual(fim) || this.dataInicio.isBefore(fim)))
-                && this.cidade.equals(cidade)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
+    public abstract boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String origem, String destino);
 }

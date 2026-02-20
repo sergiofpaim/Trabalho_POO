@@ -12,14 +12,14 @@ public class Transporte extends Incluso implements Serializable {
     private String destino;
     private int tempo;
 
-    public Transporte(double preco, String data, String local,
+    public Transporte(double preco, String data, String origem,
             String tipoTransporte, String destino,
             int tempo) {
 
         super(preco,
                 LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 LocalDate.parse(data, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-                local);
+                origem);
 
         this.tipoTransporte = tipoTransporte;
         this.destino = destino;
@@ -48,7 +48,14 @@ public class Transporte extends Incluso implements Serializable {
         return "\nTransporte: " + this.tipoTransporte
                 + "\nPreço por hora: R$ " + this.getPreco()
                 + "\nPreço total: R$ " + this.calcularPrecoTotal()
+                + "\nOrigem: " + super.getCidade()
                 + "\nDestino: " + this.destino
                 + "\nDuração da viagem em horas: " + this.tempo + "\n";
+    }
+
+    @Override
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String origem, String destino) {
+        return (this.getDataInicio().isEqual(comeco) || this.getDataInicio().isAfter(comeco)) && ((this.getDataInicio().isEqual(fim) || this.getDataInicio().isBefore(fim)))
+                && super.getCidade().equals(origem) && this.destino.equals(destino);
     }
 }

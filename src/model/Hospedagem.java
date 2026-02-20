@@ -1,12 +1,14 @@
 package model;
 
 import java.time.LocalDate;
+import java.time.Period;
 import java.time.format.DateTimeFormatter;
 
 public class Hospedagem extends Incluso {
 
     private String hotel;
     private int capacidade;
+    private int diarias;
 
     public Hospedagem(String hotel, double preco, String checkIn, String checkOut,
             int capacidade, String local) {
@@ -16,10 +18,9 @@ public class Hospedagem extends Incluso {
                 LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
                 local);
 
-        DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-
         this.hotel = hotel;
         this.capacidade = capacidade;
+        this.diarias = Period.between(super.getDataInicio(), super.getDataFim()).getDays();
     }
 
     public String getHotel() {
@@ -30,18 +31,23 @@ public class Hospedagem extends Incluso {
         return this.capacidade;
     }
 
+    public void calcularDiarias() {
+        this.diarias = Period.between(super.getDataInicio(), super.getDataFim()).getDays();
+    }
+
     @Override
     public String toString() {
         return "\nHotel: " + this.hotel
                 + "\nDiária: R$ " + this.getPreco()
-                + "\nCapacidade: " + this.capacidade;
+                + "\nCapacidade: " + this.capacidade
+                + "\nDiárias: " + this.diarias;
     }
 
     @Override
-    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade) {
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String origem, String destino) {
         boolean dataValida = (this.getDataInicio().isBefore(comeco) || this.getDataInicio().isEqual(comeco))
                 && (this.getDataFim().isAfter(fim) || this.getDataFim().isEqual(fim));
 
-        return dataValida && this.getcidade().equals(cidade);
+        return dataValida && this.getCidade().equals(origem);
     }
 }

@@ -205,7 +205,7 @@ public class Interface {
         LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
         LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = service.checarInclusosDisponiveis(dataInicio, dataFinal, destino);
+        List<Incluso> inclusosDisponiveis = service.checarInclusosDisponiveis(dataInicio, dataFinal, origem, destino);
 
         if (inclusosDisponiveis.isEmpty()) {
             System.out.println("Nenhum serviço encontrado.");
@@ -237,25 +237,25 @@ public class Interface {
         System.out.println("\nViagem criada com sucesso!");
     }
 
-    private static List<Incluso> escolheIncluso(List<Incluso> disponiveis, LocalDate Inicio, LocalDate Final) {
-        List<Incluso> transportes = new ArrayList<>();
-        List<Incluso> hospedagens = new ArrayList<>();
-        List<Incluso> eventos = new ArrayList<>();
+    private static List<Incluso> escolheIncluso(List<Incluso> disponiveis, LocalDate inicio, LocalDate finalIncluso) {
+        List<Transporte> transportes = new ArrayList<>();
+        List<Hospedagem> hospedagens = new ArrayList<>();
+        List<Evento> eventos = new ArrayList<>();
         List<Incluso> inclusosSelecionados = new ArrayList<>();
 
         for (Incluso i : disponiveis) {
-            if (i instanceof Transporte) {
-                transportes.add(i);
+            if (i instanceof Transporte transporte) {
+                transportes.add(transporte);
             }
-            if (i instanceof Hospedagem) {
-                hospedagens.add(i);
+            if (i instanceof Hospedagem hospedagem) {
+                hospedagens.add(hospedagem);
             }
-            if (i instanceof Evento) {
-                eventos.add(i);
+            if (i instanceof Evento evento) {
+                eventos.add(evento);
             }
         }
 
-        // ================= Transporte =================
+        // Transporte
         System.out.println("\nTransporte disponível:");
         mostrarLista(transportes);
         System.out.println("\nQual transporte você deseja?");
@@ -264,19 +264,23 @@ public class Interface {
             inclusosSelecionados.add(transportes.get(opcao - 1));
         }
 
-        // ================= Hospedagem =================
+        // Hospedagem
+        for (Hospedagem hospedagem : hospedagens) {
+            hospedagem.setDataInicio(inicio);
+            hospedagem.setDataFim(finalIncluso);
+            hospedagem.calcularDiarias();
+        }
+
         System.out.println("\nHospedagens disponíveis:");
         mostrarLista(hospedagens);
         System.out.println("\nQual hospedagem você deseja?");
         opcao = s.nextInt();
         if (opcao > 0 && opcao <= hospedagens.size()) {
-            Hospedagem atual = (Hospedagem) hospedagens.get(opcao - 1);
-            atual.setDataInicio(Inicio);
-            atual.setDataFim(Final);
-            inclusosSelecionados.add(atual);
+            Hospedagem hospedagem = (Hospedagem) hospedagens.get(opcao - 1);
+            inclusosSelecionados.add(hospedagem);
         }
 
-        // ================= Evento =================
+        // Evento
         System.out.println("\nEventos disponíveis:");
         mostrarLista(eventos);
         System.out.println("\nQual evento você deseja?");
@@ -285,10 +289,10 @@ public class Interface {
             inclusosSelecionados.add(eventos.get(opcao - 1));
         }
 
-        // ================= Resumo =================
+        // Resumo
         System.out.println("\nResumo do roteiro:\n");
         if (inclusosSelecionados.isEmpty()) {
-            System.out.println("Nenhum serviço selecionado.");
+            System.out.println("\nNenhum serviço selecionado.");
         } else {
             for (Incluso i : inclusosSelecionados) {
                 System.out.println(i);
@@ -514,7 +518,7 @@ public class Interface {
         }
     }
 
-    private static void mostrarLista(List<Incluso> lista) {
+    private static <T> void mostrarLista(List<T> lista) {
         System.out.println("0 - Nenhum");
         for (int i = 0; i < lista.size(); i++) {
             System.out.println((i + 1) + " - " + lista.get(i));

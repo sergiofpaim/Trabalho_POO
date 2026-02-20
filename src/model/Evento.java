@@ -68,4 +68,12 @@ public class Evento extends Incluso {
                 + "\nTema: " + tema
                 + "\nPreço diario: R$ " + getPreco();
     }
+
+    @Override
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String origem, String destino) {
+        boolean dataValida = (this.getDataInicio().isBefore(comeco) || this.getDataInicio().isEqual(comeco))
+                && (this.getDataFim().isAfter(fim) || this.getDataFim().isEqual(fim));
+
+        return dataValida && this.getCidade().equals(origem);
+    }
 }

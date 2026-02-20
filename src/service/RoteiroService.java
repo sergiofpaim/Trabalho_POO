@@ -4,7 +4,6 @@ import java.io.File;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
-
 import model.Incluso;
 import model.Roteiro;
 import model.Usuario;
@@ -67,11 +66,11 @@ public class RoteiroService {
         inclusos.removeIf(i -> i.getId().equals(id));
     }
 
-    public List<Incluso> checarInclusosDisponiveis(LocalDate dataInicio, LocalDate dataFinal, String destino) {
+    public List<Incluso> checarInclusosDisponiveis(LocalDate dataInicio, LocalDate dataFinal, String origem, String destino) {
         List<Incluso> inclusosDisponiveis = new ArrayList<>();
 
         for (Incluso incluso : inclusos) {
-            if (incluso.checarDisponibilidade(dataInicio, dataFinal, destino)) {
+            if (incluso.checarDisponibilidade(dataInicio, dataFinal, origem, destino)) {
                 inclusosDisponiveis.add(incluso);
             }
         }

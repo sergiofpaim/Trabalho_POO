@@ -52,17 +52,17 @@ public class DataSeeder {
         service.adicionarIncluso(new Evento("Jardim Botânico", "24/02/2025", "Tour guiado estufa", 30.0, "20/02/2025", "25/02/2025", "Curitiba", "Turismo"));
 
         //  Transportes (12 transportes) 
-        service.adicionarIncluso(new Transporte(200.0, "20/02/2025", "Rio de Janeiro", "aereo", "Rio de Janeiro", 2));
-        service.adicionarIncluso(new Transporte(50.0, "20/02/2025", "Rio de Janeiro", "rodoviario", "Rio de Janeiro", 6));
-        service.adicionarIncluso(new Transporte(250.0, "20/02/2025", "São Paulo", "aereo", "São Paulo", 1));
-        service.adicionarIncluso(new Transporte(40.0, "20/02/2025", "São Paulo", "rodoviario", "São Paulo", 8));
-        service.adicionarIncluso(new Transporte(150.0, "20/02/2025", "Florianópolis", "aereo", "Florianópolis", 1));
-        service.adicionarIncluso(new Transporte(30.0, "20/02/2025", "Florianópolis", "rodoviario", "Florianópolis", 12));
-        service.adicionarIncluso(new Transporte(220.0, "20/02/2025", "Salvador", "aereo", "Salvador", 2));
-        service.adicionarIncluso(new Transporte(60.0, "20/02/2025", "Salvador", "rodoviario", "Salvador", 24));
-        service.adicionarIncluso(new Transporte(180.0, "20/02/2025", "Belo Horizonte", "aereo", "Belo Horizonte", 1));
-        service.adicionarIncluso(new Transporte(45.0, "20/02/2025", "Belo Horizonte", "rodoviario", "Belo Horizonte", 9));
-        service.adicionarIncluso(new Transporte(190.0, "20/02/2025", "Curitiba", "aereo", "Curitiba", 1));
-        service.adicionarIncluso(new Transporte(35.0, "20/02/2025", "Curitiba", "rodoviario", "Curitiba", 10));
+        service.adicionarIncluso(new Transporte(200.0, "20/02/2025", "São Paulo", "aereo", "Rio de Janeiro", 2));
+        service.adicionarIncluso(new Transporte(50.0, "20/02/2025", "Florianópolis", "rodoviario", "Rio de Janeiro", 6));
+        service.adicionarIncluso(new Transporte(250.0, "20/02/2025", "Rio de Janeiro", "aereo", "São Paulo", 1));
+        service.adicionarIncluso(new Transporte(40.0, "20/02/2025", "Belo Horizonte", "rodoviario", "São Paulo", 8));
+        service.adicionarIncluso(new Transporte(150.0, "20/02/2025", "Salvador", "aereo", "Florianópolis", 1));
+        service.adicionarIncluso(new Transporte(30.0, "20/02/2025", "Curitiba", "rodoviario", "Florianópolis", 12));
+        service.adicionarIncluso(new Transporte(220.0, "20/02/2025", "Rio de Janeiro", "aereo", "Salvador", 2));
+        service.adicionarIncluso(new Transporte(60.0, "20/02/2025", "São Paulo", "rodoviario", "Salvador", 24));
+        service.adicionarIncluso(new Transporte(180.0, "20/02/2025", "Florianópolis", "aereo", "Belo Horizonte", 1));
+        service.adicionarIncluso(new Transporte(45.0, "20/02/2025", "Curitiba", "rodoviario", "Belo Horizonte", 9));
+        service.adicionarIncluso(new Transporte(190.0, "20/02/2025", "Salvador", "aereo", "Curitiba", 1));
+        service.adicionarIncluso(new Transporte(35.0, "20/02/2025", "Rio de Janeiro", "rodoviario", "Curitiba", 10));
     }
 }
