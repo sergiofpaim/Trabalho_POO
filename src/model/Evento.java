@@ -1,10 +1,9 @@
 package model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-public class Evento extends Incluso implements Serializable {
+public class Evento extends Incluso {
 
     private static final long serialVersionUID = 1L;
 

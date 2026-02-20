@@ -44,7 +44,6 @@ public class Interface {
         while (!state.equals("sair")) {
             switch (state) {
                 case "" -> {
-                    sessao = "";
                     System.out.println("\nRegistrar uma conta ou logar?");
                     System.out.println("0. Registrar");
                     System.out.println("1. Logar");
