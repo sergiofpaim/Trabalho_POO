@@ -1,4 +1,5 @@
 package model;
+
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -8,12 +9,12 @@ public class Hospedagem extends Incluso {
     private int capacidade;
 
     public Hospedagem(String hotel, double preco, String checkIn, String checkOut,
-                      int capacidade, String local, String id) {
+            int capacidade, String local, String id) {
 
         super(preco,
-              LocalDate.parse(checkIn, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-              LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
-              local, id);
+                LocalDate.parse(checkIn, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                LocalDate.parse(checkOut, DateTimeFormatter.ofPattern("dd/MM/yyyy")),
+                local, id);
 
         DateTimeFormatter formato = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
@@ -21,28 +22,25 @@ public class Hospedagem extends Incluso {
         this.capacidade = capacidade;
     }
 
-    public String getHotel(){
+    public String getHotel() {
         return this.hotel;
     }
 
-    public int getCapacidade(){
+    public int getCapacidade() {
         return this.capacidade;
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         return "Hotel: " + this.hotel
                 + " Preço: R$" + this.getPreco();
     }
 
     @Override
-    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade){
-         // Para hospedagem (parceria), a viagem deve estar DENTRO do periodo da parceria
-         // Parceria Inicio <= Viagem Inicio  AND  Parceria Fim >= Viagem Fim
-         // E a cidade deve bater
-         boolean dataValida = (this.getDataInicio().isBefore(comeco) || this.getDataInicio().isEqual(comeco)) &&
-                              (this.getDataFim().isAfter(fim) || this.getDataFim().isEqual(fim));
-                              
-         return dataValida && this.getcidade().equals(cidade);
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade) {
+        boolean dataValida = (this.getDataInicio().isBefore(comeco) || this.getDataInicio().isEqual(comeco))
+                && (this.getDataFim().isAfter(fim) || this.getDataFim().isEqual(fim));
+
+        return dataValida && this.getcidade().equals(cidade);
     }
 }
