@@ -1,9 +1,11 @@
 package model;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
-public class Viagem {
+public class Roteiro implements Serializable {
+
     private String titularId;
     private String origem;
     private String destino;
@@ -12,8 +14,7 @@ public class Viagem {
     private LocalDate dataFim;
     private List<Incluso> inclusos;
 
-    public Viagem(String titularId,String origem, String destino, Double preco, LocalDate dataComeco, LocalDate dataFim, List<Incluso> inclusos)
-    {
+    public Roteiro(String titularId, String origem, String destino, Double preco, LocalDate dataComeco, LocalDate dataFim, List<Incluso> inclusos) {
         this.titularId = titularId;
         this.origem = origem;
         this.destino = destino;
@@ -30,7 +31,6 @@ public class Viagem {
     public void setTitularId(String titularId) {
         this.titularId = titularId;
     }
-
 
     public String getOrigem() {
         return origem;

@@ -5,13 +5,13 @@ import java.util.List;
 import model.Incluso;
 
 public class RoteiroService {
-    
-    public List<Incluso> ChecarInclusosDisponiveis(java.util.Collection<Incluso> todosInclusos, 
-                                                   LocalDate dataInicio, 
-                                                   LocalDate dataFinal, 
-                                                   String destino) {
+
+    public List<Incluso> ChecarInclusosDisponiveis(java.util.Collection<Incluso> todosInclusos,
+            LocalDate dataInicio,
+            LocalDate dataFinal,
+            String destino) {
         List<Incluso> inclusosDisponiveis = new java.util.ArrayList<>();
-    
+
         for (Incluso incluso : todosInclusos) {
             if (incluso.checarDisponibilidade(dataInicio, dataFinal, destino)) {
                 inclusosDisponiveis.add(incluso);

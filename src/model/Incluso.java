@@ -14,8 +14,8 @@ public abstract class Incluso implements Serializable {
     private LocalDate dataInicio;
     private LocalDate dataFim;
 
-    public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim, 
-                   String cidade, String id) {
+    public Incluso(double preco, LocalDate dataInicio, LocalDate dataFim,
+            String cidade, String id) {
 
         this.id = id;
         this.cidade = cidade;
@@ -24,19 +24,23 @@ public abstract class Incluso implements Serializable {
         this.dataFim = dataFim;
     }
 
-    public void setDataInicio(LocalDate inicio) { dataInicio = inicio; }
+    public void setDataInicio(LocalDate inicio) {
+        dataInicio = inicio;
+    }
 
-    public void setDataFim(LocalDate fim) { dataFim = fim; }
+    public void setDataFim(LocalDate fim) {
+        dataFim = fim;
+    }
 
-    public double getPreco(){
+    public double getPreco() {
         return this.preco;
     }
 
-    public LocalDate getDataInicio(){
+    public LocalDate getDataInicio() {
         return this.dataInicio;
     }
 
-    public LocalDate getDataFim(){
+    public LocalDate getDataFim() {
         return this.dataFim;
     }
 
@@ -48,16 +52,16 @@ public abstract class Incluso implements Serializable {
         return this.id;
     }
 
-    public double calcularPrecoTotal(){
+    public double calcularPrecoTotal() {
         return Period.between(this.dataInicio, this.dataFim).getDays() * this.preco;
     }
 
-    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade){
-        if ((this.dataInicio.isEqual(comeco) || this.dataInicio.isAfter(comeco)) && ((this.dataInicio.isEqual(fim) || this.dataInicio.isBefore(fim))) &&
-             this.cidade.equals(cidade))
+    public boolean checarDisponibilidade(LocalDate comeco, LocalDate fim, String cidade) {
+        if ((this.dataInicio.isEqual(comeco) || this.dataInicio.isAfter(comeco)) && ((this.dataInicio.isEqual(fim) || this.dataInicio.isBefore(fim)))
+                && this.cidade.equals(cidade)) {
             return true;
-
-        else 
+        } else {
             return false;
+        }
     }
 }
