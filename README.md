@@ -59,6 +59,10 @@ java -cp bin Interface
 
 ---
 
+## Testando aplicação
+
+A aplicação já vem com dados seed. Desta forma, escolha entre Paris, Nova York, Rio de Janeiro, Tokyo e Londres como localizações para viagens, entre os dias 20/02/2025 e 25/02/2025.
+
 ## Limpar Arquivos Compilados
 
 Linux / macOS:

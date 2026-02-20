@@ -271,7 +271,7 @@ public class Interface {
         // ================= Transporte =================
         System.out.println("\nTransporte disponível:");
         mostrarLista(transportes);
-        System.out.println("Qual transporte você deseja?");
+        System.out.println("\nQual transporte você deseja?");
         int opcao = s.nextInt();
         if (opcao > 0 && opcao <= transportes.size()) {
             inclusosSelecionados.add(transportes.get(opcao - 1));
@@ -280,7 +280,7 @@ public class Interface {
         // ================= Hospedagem =================
         System.out.println("\nHospedagens disponíveis:");
         mostrarLista(hospedagens);
-        System.out.println("Qual hospedagem você deseja?");
+        System.out.println("\nQual hospedagem você deseja?");
         opcao = s.nextInt();
         if (opcao > 0 && opcao <= hospedagens.size()) {
             Hospedagem atual = (Hospedagem) hospedagens.get(opcao - 1);
@@ -292,7 +292,7 @@ public class Interface {
         // ================= Evento =================
         System.out.println("\nEventos disponíveis:");
         mostrarLista(eventos);
-        System.out.println("Qual evento você deseja?");
+        System.out.println("\nQual evento você deseja?");
         opcao = s.nextInt();
         if (opcao > 0 && opcao <= eventos.size()) {
             inclusosSelecionados.add(eventos.get(opcao - 1));
