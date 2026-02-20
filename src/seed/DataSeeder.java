@@ -2,7 +2,6 @@ package seed;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-
 import model.Evento;
 import model.Hospedagem;
 import model.Transporte;
@@ -11,8 +10,8 @@ import service.RoteiroService;
 
 public class DataSeeder {
 
-    private static final DateTimeFormatter BR =
-            DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private static final DateTimeFormatter BR
+            = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private static LocalDate d(String data) {
         return LocalDate.parse(data, BR);

@@ -95,7 +95,7 @@ public class Interface {
             String senha = s.nextLine();
 
             try {
-                Usuario novo = new Usuario(nome, cpf, LocalDate.parse(nascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy")) , endereco, telefone, senha, "cliente");
+                Usuario novo = new Usuario(nome, cpf, LocalDate.parse(nascimento, DateTimeFormatter.ofPattern("dd/MM/yyyy")), endereco, telefone, senha, "cliente");
                 service.adicionarUsuario(novo);
             } catch (Exception a) {
                 System.out.println(a);
@@ -192,7 +192,7 @@ public class Interface {
         System.out.println("           Criar Roteiro         ");
         System.out.println("=================================");
 
-        try { 
+        try {
             System.out.print("Origem: ");
             String origem = s.nextLine();
 
@@ -228,7 +228,6 @@ public class Interface {
                 precoTotal += incluso.calcularPrecoTotal();
             }
 
-
             Roteiro viagem = new Roteiro(
                     sessao,
                     origem,
@@ -242,7 +241,7 @@ public class Interface {
             service.adicionarRoteiro(viagem);
 
             System.out.println("\nViagem criada com sucesso!");
-        } catch(Exception e) {
+        } catch (Exception e) {
             System.out.println("\nEntrada Invalida!");
         }
     }
@@ -254,7 +253,7 @@ public class Interface {
         List<Incluso> inclusosSelecionados = new ArrayList<>();
 
         for (Incluso i : disponiveis) {
-            i.setPreco(i.getPreco() * (1+service.getTaxaLucro()));
+            i.setPreco(i.getPreco() * (1 + service.getTaxaLucro()));
             if (i instanceof Transporte transporte) {
                 transportes.add(transporte);
             }
@@ -355,7 +354,7 @@ public class Interface {
                 listarUsuarios();
             case 5 ->
                 removerUsuario();
-            case 6 -> 
+            case 6 ->
                 gerarRelatorioClientes();
             case 7 ->
                 modificarTaxaLucro();
@@ -397,8 +396,11 @@ public class Interface {
         System.out.println("Qual o id do Usuario: ");
         String id = s.nextLine();
         boolean resultado = service.removerUsuarioPorId(id);
-        if(resultado) System.out.println("Usuario removido com sucesso!");
-        else System.out.println("Código do usuario não encontrado.");
+        if (resultado) {
+            System.out.println("Usuario removido com sucesso!");
+        } else {
+            System.out.println("Código do usuario não encontrado.");
+        }
     }
 
     public static void criaInclusos() {
@@ -589,7 +591,6 @@ public class Interface {
             System.out.println((i + 1) + " - " + lista.get(i));
         }
     }
-
 
     public static void painelDebug() {
         System.out.println("=================================");

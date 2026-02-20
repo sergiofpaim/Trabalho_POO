@@ -5,8 +5,6 @@ import java.time.format.DateTimeFormatter;
 
 public class Evento extends Incluso {
 
-    private static final long serialVersionUID = 1L;
-
     private String nome;
     private LocalDate data;
     private String descricao;

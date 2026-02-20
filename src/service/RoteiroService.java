@@ -11,6 +11,7 @@ import repo.Repo;
 import seed.DataSeeder;
 
 public class RoteiroService {
+
     private static double taxa_lucro;
 
     private List<Usuario> usuarios;
@@ -29,9 +30,13 @@ public class RoteiroService {
     }
 
     //Taxa Lucro
-    public double getTaxaLucro() { return taxa_lucro; }
+    public double getTaxaLucro() {
+        return taxa_lucro;
+    }
 
-    public void setTaxaLucro(double t) { taxa_lucro = t; }
+    public void setTaxaLucro(double t) {
+        taxa_lucro = t;
+    }
 
     // Usuarios 
     public List<Usuario> getUsuarios() {
@@ -42,8 +47,8 @@ public class RoteiroService {
         usuarios.add(usuario);
     }
 
-    private int buscarPosicaoUsuarioPorId(String id){
-        for (int i = 0;i < usuarios.size(); i++) {
+    private int buscarPosicaoUsuarioPorId(String id) {
+        for (int i = 0; i < usuarios.size(); i++) {
             if (usuarios.get(i).getId().equals(id)) {
                 return i;
             }
@@ -53,7 +58,9 @@ public class RoteiroService {
 
     public Usuario buscarUsuarioPorId(String id) {
         int pos = buscarPosicaoUsuarioPorId(id);
-        if (pos != -1) return usuarios.get(pos);
+        if (pos != -1) {
+            return usuarios.get(pos);
+        }
 
         return null;
     }
