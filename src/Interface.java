@@ -107,7 +107,8 @@ public class Interface {
             String senha = s.nextLine();
 
             try {
-                Usuario novo = new Usuario(nome, cpf, nascimento, endereco, telefone, senha, "cliente", UUID.randomUUID().toString());
+                Usuario novo = new Usuario(nome, cpf, nascimento, endereco, telefone, senha, "cliente",
+                        UUID.randomUUID().toString());
                 usuarios.put(novo.getId(), novo);
             } catch (Exception a) {
                 System.out.println(a);
@@ -168,31 +169,40 @@ public class Interface {
             return;
         }
 
+        boolean encontrou = false;
+
         for (Map.Entry<String, Roteiro> entry : roteiros.entrySet()) {
-            String id = entry.getKey();
-            Roteiro roteiro = entry.getValue();
+            if (entry.getValue().getTitularId().equals(sessao)) {
+                String id = entry.getKey();
+                Roteiro roteiro = entry.getValue();
 
-            System.out.println("======================================");
-            System.out.println("ID do Roteiro: " + id);
-            System.out.println("Titular: " + roteiro.getTitularId());
-            System.out.println("Origem: " + roteiro.getOrigem());
-            System.out.println("Destino: " + roteiro.getDestino());
-            System.out.println("Preço: R$ " + String.format("%.2f", roteiro.getPreco()));
-            System.out.println("Data de Início: " + roteiro.getDataComeco());
-            System.out.println("Data de Fim: " + roteiro.getDataFim());
+                encontrou = true;
 
-            List<Incluso> inclusos = roteiro.getInclusos();
-            if (inclusos != null && !inclusos.isEmpty()) {
                 System.out.println("======================================");
-                System.out.println("\nINCLUSOS:");
-                for (Incluso item : inclusos) {
-                    System.out.println(item);
+                System.out.println("ID do Roteiro: " + id);
+                System.out.println("Titular: " + roteiro.getTitularId());
+                System.out.println("Origem: " + roteiro.getOrigem());
+                System.out.println("Destino: " + roteiro.getDestino());
+                System.out.println("Preço: R$ " + String.format("%.2f", roteiro.getPreco()));
+                System.out.println("Data de Início: " + roteiro.getDataComeco());
+                System.out.println("Data de Fim: " + roteiro.getDataFim());
+
+                List<Incluso> inclusos = roteiro.getInclusos();
+                if (inclusos != null && !inclusos.isEmpty()) {
+                    System.out.println("======================================");
+                    System.out.println("\nINCLUSOS:");
+                    for (Incluso item : inclusos) {
+                        System.out.println(item);
+                    }
+                } else {
+                    System.out.println("Itens Inclusos: Nenhum");
                 }
-            } else {
-                System.out.println("Itens Inclusos: Nenhum");
+                System.out.println("======================================\n");
             }
-            System.out.println("======================================\n");
         }
+
+        if (!encontrou)
+            System.out.println("Não há roteiros cadastrados para esta sessão.");
     }
 
     private static void criaRoteiro() {
@@ -217,7 +227,8 @@ public class Interface {
         LocalDate dataInicio = LocalDate.parse(dataInicioStr, formatter);
         LocalDate dataFinal = LocalDate.parse(dataFinalStr, formatter);
 
-        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio, dataFinal, destino);
+        List<Incluso> inclusosDisponiveis = roteiroService.ChecarInclusosDisponiveis(inclusos.values(), dataInicio,
+                dataFinal, destino);
 
         if (inclusosDisponiveis.isEmpty()) {
             System.out.println("Nenhum serviço encontrado.");
@@ -242,8 +253,7 @@ public class Interface {
                 precoTotal,
                 dataInicio,
                 dataFinal,
-                selecionados
-        );
+                selecionados);
 
         roteiros.put(UUID.randomUUID().toString(), viagem);
 
@@ -364,8 +374,7 @@ public class Interface {
             String checkOut = s.nextLine();
 
             Hospedagem hosp = new Hospedagem(
-                    nomeHotel, precoDiaria, checkIn, checkOut, capacidade, localHotel, UUID.randomUUID().toString()
-            );
+                    nomeHotel, precoDiaria, checkIn, checkOut, capacidade, localHotel, UUID.randomUUID().toString());
 
             inclusos.put(hosp.getId(), hosp);
             System.out.println("Hospedagem cadastrada com sucesso!");
