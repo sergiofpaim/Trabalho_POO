@@ -20,7 +20,6 @@ public class Repo {
         }
     }
 
-    @SuppressWarnings("unchecked")
     public static <T> ArrayList<T> desserialize(File arquivo) {
         if (!arquivo.exists() || arquivo.length() == 0) {
             return new ArrayList<>();

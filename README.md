@@ -48,8 +48,7 @@ bin/ (gerado após compilação)
 Compile com:
 
 ```bash
-javac -d bin src/*.java src/model/*.java src/repo/*.java src/service/*.java
-```
+javac -d bin src/*.java src/model/*.java src/repo/*.java src/service/*.java src/seed/*.java```
 
 E depois rode a aplicação:
 
