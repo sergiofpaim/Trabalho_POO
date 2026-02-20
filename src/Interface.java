@@ -201,8 +201,9 @@ public class Interface {
             }
         }
 
-        if (!encontrou)
+        if (!encontrou) {
             System.out.println("Não há roteiros cadastrados para esta sessão.");
+        }
     }
 
     private static void criaRoteiro() {
@@ -339,10 +340,13 @@ public class Interface {
         System.out.println("          Painel de Admin        ");
         System.out.println("=================================");
         System.out.println("\nComo podemos te ajudar " + usuarios.get(sessao).getNome() + "?");
+        System.out.println("1. Criar inclusos");
         System.out.println("999. Sair");
 
         int opcao = s.nextInt();
         switch (opcao) {
+            case 1 ->
+                criaInclusos();
             case 999 ->
                 state = "";
 
@@ -351,37 +355,118 @@ public class Interface {
         }
     }
 
-    public static void cadastraHospedagem() {
+    public static void criaInclusos() {
+        String id, loc, cIn, cOut;
+        double preco;
+        System.out.println("ID: ");
+        id = s.nextLine();
+        System.out.println("Cidade: ");
+        loc = s.nextLine();
+        System.out.println("Preço: ");
+        preco = s.nextDouble();
+        System.out.println("Data de CheckIn: ");
+        cIn = s.nextLine();
+        System.out.println("Data de CheckOut: ");
+        cOut = s.nextLine();
+        System.out.println("Deseja criar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
+        switch (s.nextInt()) {
+            case 0 -> {
+                try {
+                    String h;
+                    int cap;
+                    System.out.println("Nome do Hotel: ");
+                    h = s.nextLine();
+                    System.out.println("Capacidade: ");
+                    cap = s.nextInt();
+                    Hospedagem hosp = new Hospedagem(h, preco, cIn, cOut, cap, loc, id);
+                    inclusos.put(hosp.getId(), hosp);
+                } catch (Exception e) {
+                    System.out.println("Erro ao criar hospedagem");
+                }
+            }
+            case 1 -> {
+                try {
+                    String n;
+                    String data;
+                    String desc;
+                    String tema;
+                    System.out.println("Nome do Evento: ");
+                    n = s.nextLine();
+                    System.out.println("Data: ");
+                    data = s.nextLine();
+                    System.out.println("Descricao: ");
+                    desc = s.nextLine();
+                    System.out.println("Tema: ");
+                    tema = s.nextLine();
+                    Evento ev = new Evento(n, data, desc, preco, cIn, cOut, loc, tema, id);
+                    inclusos.put(ev.getId(), ev);
+                } catch (Exception e) {
+                    System.out.println("Erro ao criar hospedagem");
+                }
+            }
+            case 2 -> {
+                try {
+                    String tipoTransporte;
+                    String destino;
+                    int tempo;
+                    System.out.println("Tipo de Transporte: ");
+                    tipoTransporte = s.nextLine();
+                    System.out.println("Destino: ");
+                    destino = s.nextLine();
+                    System.out.println("Tempo: ");
+                    tempo = s.nextInt();
+                    Transporte trnsp = new Transporte(preco, cIn, loc, tipoTransporte, destino, tempo, id);
+                    inclusos.put(trnsp.getId(), trnsp);
+                } catch (Exception e) {
+                    System.out.println("Erro ao criar hospedagem");
+                }
+            }
+            default ->
+                System.out.println("Valor invalido!");
+        }
+        System.out.println("Objeto criado com sucesso!");
+    }
+
+    public static void apagaInclusos() {
+        System.out.println("Deseja apagar \n[0] Hospedagem\n[1] Eventos\n[2] Transporte");
+        List<Incluso> transportes = new ArrayList<>();
+        List<Incluso> hospedagens = new ArrayList<>();
+        List<Incluso> eventos = new ArrayList<>();
+
+        for (Incluso i : inclusos.values()) {
+            if (i instanceof Transporte) {
+                transportes.add(i);
+            }
+            if (i instanceof Hospedagem) {
+                hospedagens.add(i);
+            }
+            if (i instanceof Evento) {
+                eventos.add(i);
+            }
+        }
         try {
-            System.out.println("Nome do hotel: ");
-            String nomeHotel = s.nextLine();
-
-            System.out.println("Preço da diária: ");
-            double precoDiaria = s.nextDouble();
-            s.nextLine();
-
-            System.out.println("Local do hotel: ");
-            String localHotel = s.nextLine();
-
-            System.out.println("Capacidade de reservas simultâneas: ");
-            int capacidade = s.nextInt();
-            s.nextLine();
-
-            System.out.println("Data de Check-in: ");
-            String checkIn = s.nextLine();
-
-            System.out.println("Data de Check-out: ");
-            String checkOut = s.nextLine();
-
-            Hospedagem hosp = new Hospedagem(
-                    nomeHotel, precoDiaria, checkIn, checkOut, capacidade, localHotel, UUID.randomUUID().toString());
-
-            inclusos.put(hosp.getId(), hosp);
-            System.out.println("Hospedagem cadastrada com sucesso!");
-
+            switch (s.nextInt()) {
+                case 0 -> {
+                    mostrarLista(hospedagens);
+                    System.out.println("\nQual hospedagem você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                }
+                case 1 -> {
+                    mostrarLista(eventos);
+                    System.out.println("\nQual evento você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                }
+                case 2 -> {
+                    mostrarLista(transportes);
+                    System.out.println("\nQual transporte você deseja apagar? (Digite o ID)");
+                    int opcao = s.nextInt();
+                    inclusos.remove(opcao);
+                }
+            }
         } catch (Exception e) {
-            System.out.println("Hospedagem não cadastrada! Erro: " + e.getMessage());
-            s.nextLine();
+            System.out.println("Erro ao apagar hospedagem");
         }
     }
 
